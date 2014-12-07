@@ -1,7 +1,9 @@
 package ttx.controller
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import com.gemstone.org.json.JSONObject
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
 import ttx.service.base.BaseService
 import ttx.service.base.RegistryCenter
 
@@ -17,4 +19,31 @@ class CreationController {
     def billMapping() {
         RegistryCenter.getMapping()
     }
+
+    /**
+     * 保存结构到数据库
+     */
+    @RequestMapping(value = 'create', method = RequestMethod.POST)
+    Map<String, Object> create(@RequestBody Map map, BindingResult result) {
+        String sql = "insert into cbt_bill_structure(bill_key, structure) values(?,?)"
+        String billKey = map['billKey']
+        JdbcTemplate template = service.getTemplate()
+        int count = template.queryForObject("select count(id) from cbt_bill_structure where bill_key=?", Integer.class, billKey)
+        if (count > 0) {
+            sql = "update cbt_bill_structure(bill_key, structure) values(?,?)"
+        }
+        template.update(sql, billKey, (map as JSONObject).toString())
+    }
+
+    /**
+     * 从数据库获取结构
+     */
+    @RequestMapping(value = "billStructure/{billKey}", method = RequestMethod.GET)
+    def billStructure(@PathVariable("billKey") String billKey) {
+        JdbcTemplate template = service.getTemplate()
+        String sql = "select billStructure from cbt_bill_structure where bill_key=?"
+        def json = template.queryForObject(sql, String.class, billKey)
+        json
+    }
+
 }

@@ -30,9 +30,10 @@ class CreationController {
         JdbcTemplate template = service.getTemplate()
         int count = template.queryForObject("select count(id) from cbt_bill_structure where bill_key=?", Integer.class, billKey)
         if (count > 0) {
-            sql = "update cbt_bill_structure(bill_key, structure) values(?,?)"
+            sql = "update cbt_bill_structure set structure=? where bill_key=?"
         }
-        template.update(sql, billKey, (map as JSONObject).toString())
+        String structure = (map as JSONObject).toString()
+        template.update(sql, structure, billKey)
     }
 
     /**
@@ -41,7 +42,7 @@ class CreationController {
     @RequestMapping(value = "billStructure/{billKey}", method = RequestMethod.GET)
     def billStructure(@PathVariable("billKey") String billKey) {
         JdbcTemplate template = service.getTemplate()
-        String sql = "select billStructure from cbt_bill_structure where bill_key=?"
+        String sql = "select structure from cbt_bill_structure where bill_key=?"
         def json = template.queryForObject(sql, String.class, billKey)
         json
     }

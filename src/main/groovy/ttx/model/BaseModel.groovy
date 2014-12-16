@@ -1,8 +1,9 @@
-package ttx.model.base
+package ttx.model
 
 /**
  * Created by journey on 14-12-3.
  */
+@Deprecated
 class BaseModel {
     String headerTableName
     String lineTableName

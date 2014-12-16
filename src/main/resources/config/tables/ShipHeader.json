@@ -1,0 +1,11 @@
+{
+  "key":"ship_header",
+  "table":"wm_ship_header",
+  "prefix":"sh",
+  "idColumnName":"id",
+  "isDetail":"false",
+  "captionMapping":{
+
+  }
+
+}

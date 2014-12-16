@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import ttx.service.base.BaseService
-import ttx.service.base.RegistryCenter
+import ttx.service.RegistryCenter
 
 /**
  * Created by journey on 14-12-5.

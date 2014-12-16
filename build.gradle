@@ -58,6 +58,9 @@ allprojects {
 //        compile("org.springframework.data:spring-data-jdbc-core:1.1.0.RELEASEgradle")
 
         compile 'org.codehaus.groovy:groovy-all:2.3.3'
+//        compile 'com.belerweb:pinyin4j:2.5.0'
+        compile fileTree(dir: 'lib')
+
 
         testCompile 'junit:junit'
     }

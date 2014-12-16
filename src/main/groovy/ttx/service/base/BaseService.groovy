@@ -2,7 +2,7 @@ package ttx.service.base
 
 import org.springframework.jdbc.core.JdbcTemplate
 import ttx.jdbc.JdbcUtil
-import ttx.model.base.BaseModel
+import ttx.model.BaseModel
 
 /**
  * Created by journey on 14-12-5.

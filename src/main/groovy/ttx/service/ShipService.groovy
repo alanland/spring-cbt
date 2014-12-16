@@ -1,7 +1,5 @@
 package ttx.service
 
-import ttx.model.ShipHeader
-import ttx.model.ShipLine
 import ttx.service.base.CreationService
 
 /**
@@ -10,7 +8,5 @@ import ttx.service.base.CreationService
 class ShipService extends CreationService {
     ShipService() {
         super()
-        header = new ShipHeader()
-        line = new ShipLine()
     }
 }

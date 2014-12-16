@@ -38,6 +38,11 @@ select * from ttx_user where
         res
     }
 
+
+
+
+
+
     @RequestMapping(value = '', method = RequestMethod.DELETE, consumes = 'application/json')
     def delete(HttpServletRequest req,@RequestBody List<Integer> list) {
         String sql = "delete from ttx_user where id in(${list.join(',')})"

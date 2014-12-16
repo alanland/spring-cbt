@@ -1,0 +1,30 @@
+{
+  "commandItems": {
+    "identifier": "id",
+    "label": "text",
+    "items": [
+      {"id": "file", "type": 3, "text": "File", "order": 1000},
+      {"id": "save", "type": 1, "text": "Save", "order": 1520, "group": "save"},
+      {"id": "saveAs", "type": 1, "text": "Save As...", "order": 1530, "group": "save"},
+      {"id": "saveAll", "type": 1, "text": "Save All", "order": 1540, "group": "save"},
+      {"id": "close", "type": 3, "text": "Close", "order": 1420, "group": "close"},
+      {"id": "closeAll", "type": 1, "text": "Close All", "order": 1430, "group": "close"},
+      {"id": "logoff", "type": 1, "text": "Logoff", "order": 2020, "group": "exit"},
+      {"id": "switchUser", "type": 1, "text": "Switch User", "order": 2030, "group": "exit"},
+      {"id": "edit", "type": 3, "text": "Edit", "order": 4000},
+      {"id": "navigate", "type": 3, "text": "Navigate", "order": 6000},
+      {"id": "search", "type": 3, "text": "Search", "order": 8000},
+      {"id": "project", "type": 3, "text": "Project", "order": 10000},
+      {"id": "help", "type": 3, "text": "Help", "order": 12000},
+      {"id": "about", "type": 1, "text": "About", "order": 12000}
+    ]
+  },
+  "mainMenu": {
+    "file": {"save": 0, "saveAll": 0, "close": {"save": 0, "saveAll": 0}, "closeAll": 0, "logoff": 0, "switchUser": 0},
+    "edit": 0,
+    "navigate": 0,
+    "search": 0,
+    "project": 0,
+    "help": {"about": 0}
+  }
+}

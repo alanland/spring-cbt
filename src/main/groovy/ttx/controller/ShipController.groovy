@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import ttx.jdbc.JdbcUtil
-import ttx.model.ShipHeader
-import ttx.model.ShipLine
+import ttx.model.outbound.ShipHeader
+import ttx.model.outbound.ShipLine
 import ttx.service.ShipService
 
 import javax.servlet.http.HttpServletRequest

@@ -1,0 +1,12 @@
+{
+  "key": "owner",
+  "tableName": "wm_owner",
+  "prefix": "",
+  "idColumnName": "id",
+  "isDetail": false,
+  "fields": {
+    "code": {"caption": "代码", "type": "string"},
+    "name": {"caption": "代码", "type": "string"},
+    "hintCode": {"caption": "代码", "type": "string"}
+  }
+}

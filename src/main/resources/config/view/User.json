@@ -1,0 +1,52 @@
+{
+  "key":"",
+  "actionJsModule": "",
+  "queryFields": [
+    {"id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like"},
+    {"id": "name", "type": "string", "field": "name", "name": "Name", "operator": "equals"},
+    {"id": "hintCode", "type": "string", "field": "hintCode", "name": "HintCode", "operator": "between"}
+  ],
+  "queryActions": [
+    {"id": "query", "action": "query", "name": "Query"}
+  ],
+  "listActions": [
+    {
+      "id": "new", "action": "new", "name": "New",
+      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+    },
+    {
+      "id": "edit", "action": "edit", "name": "Edit",
+      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconWikiword"}
+    },
+    {
+      "id": "delete", "action": "delete", "name": "Delete",
+      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
+    }
+  ],
+  "listStructure": [
+    {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+    {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+    {"id": "no", "field": "no", "name": "Bill No", "width": "100px"},
+    {"id": "owner", "field": "owner", "name": "Owner"},
+    {"id": "count", "field": "count", "name": "Count", "width": "80px"}
+  ],
+  "billStructure": {
+    "headerFields": [
+      {"id": "no", "type": "string", "field": "no", "name": "Bill No"},
+      {"id": "owner", "type": "string", "field": "owner", "name": "Owner"},
+      {"id": "count", "type": "number", "field": "count", "name": "Count"}
+    ],
+    "detailsStructure": [
+      {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+      {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+      {"id": "material", "field": "material", "name": "Material", "width": "50px"},
+      {"id": "spec", "field": "spec", "name": "Spec"},
+      {"id": "qty", "field": "qty", "name": "Quantity", "width": "80px"}
+    ],
+    "detailEditFields": [
+      {"id": "material", "type": "string", "field": "material", "name": "Material"},
+      {"id": "owner", "type": "string", "field": "owner", "name": "Spec"},
+      {"id": "count", "type": "number", "field": "count", "name": "Quantity"}
+    ]
+  }
+}

@@ -4,8 +4,9 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.datasource.SimpleDriverDataSource
-import ttx.model.ShipHeader
+import ttx.model.outbound.ShipHeader
 
+import java.sql.Driver
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -16,6 +17,18 @@ class JdbcUtil {
     static JdbcTemplate template = null
 
     private static final AtomicLong counter = new AtomicLong();
+
+    static getDatabaseType(JdbcTemplate template) {
+        // TODO data source for production
+        SimpleDriverDataSource dataSource = template.getDataSource() as SimpleDriverDataSource
+        Driver driver = dataSource.getDriver()
+        // TODO database type detection
+        def a = [1: 3]
+        Map<Class, DatabaseType> typeMap = new HashMap<>();
+        typeMap.put(org.postgresql.Driver, DatabaseType.postgres)
+        typeMap.put(org.h2.Driver.class, DatabaseType.postgres)
+        typeMap.get(driver.getClass(), DatabaseType.unknown)
+    }
 
     static JdbcTemplate getTemplate() {
         if (!template) {

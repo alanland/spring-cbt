@@ -12,5 +12,6 @@ class Application {
 //        JdbcUtil.initData()
 //        UserDatas.create()
         SpringApplication.run(Application.class, args)
+
     }
 }

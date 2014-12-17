@@ -1,72 +1,112 @@
 {
-  "key": "",
-  "actionJsModule": "",
-  "queryFields": [
-    {"id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like"},
-    {"id": "name", "type": "string", "field": "name", "name": "Name", "operator": "equals"},
-    {"id": "hintCode", "type": "string", "field": "hintCode", "name": "HintCode", "operator": "between"}
-  ],
-  "queryActions": [
-    {"id": "query", "action": "query", "name": "Query"}
-  ],
-  "listActions": [
-    {
-      "id": "new", "action": "new", "name": "New",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+    "key": "",
+    "actionJsModule": "",
+    "list": {
+        "columns": 3,
+        "queryFields": [
+            {"id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like"},
+            {"id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like"},
+            {"id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like"},
+            {
+                "id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like",
+                "layout": {"span": 1, "wrap": true}
+            },
+            {
+                "id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like",
+                "layout": {"span": 2}
+            },
+            {
+                "id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like",
+                "layout": {"span": 2}
+            },
+            {
+                "id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like",
+                "layout": {"span": 1}
+            },
+            {
+                "id": "code", "type": "string", "field": "code", "name": "Code", "operator": "like",
+                "layout": {"span": 3}
+            },
+            {
+                "id": "name", "type": "string", "field": "name", "name": "Name", "operator": "equals",
+                "layout": {"wrap": true}
+            },
+            {"id": "hintCode", "type": "string", "field": "hintCode", "name": "HintCode", "operator": "between"}
+        ],
+        "queryActions": [
+            {"id": "query", "action": "query", "name": "Query"}
+        ],
+        "listGrid": {
+            "name": "List Grid",
+            "actions": [
+                {
+                    "id": "new", "action": "new", "name": "New",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                },
+                {
+                    "id": "edit", "action": "edit", "name": "Edit",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconWikiword"}
+                },
+                {
+                    "id": "delete", "action": "delete", "name": "Delete",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
+                }
+            ],
+            "structure": [
+                {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+                {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+                {"id": "no", "field": "no", "name": "Bill No", "width": "100px"},
+                {"id": "owner", "field": "owner", "name": "Owner"},
+                {"id": "count", "field": "count", "name": "Count", "width": "80px"}
+            ]
+        }
     },
-    {
-      "id": "edit", "action": "edit", "name": "Edit",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconWikiword"}
+    "bill": {
+        "columns": 2,
+        "headerActions": [
+            {"id": "save", "action": "save", "name": "Save"},
+            {"id": "reset", "action": "reset", "name": "Reset"}
+        ],
+        "headerFields": [
+            {"id": "no", "type": "string", "field": "no", "name": "Bill No"},
+            {"id": "owner", "type": "string", "field": "owner", "name": "Owner"},
+            {"id": "count", "type": "number", "field": "count", "name": "Count"}
+        ],
+        "detailGrid": {
+            "name": "Details",
+            "actions": [
+                {
+                    "id": "newDetail", "action": "newDetail", "name": "New Detail",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                },
+                {
+                    "id": "editDetail", "action": "editDetail", "name": "Edit Detail",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconWikiword"}
+                },
+                {
+                    "id": "deleteDetail", "action": "deleteDetail", "name": "Delete Detail",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
+                }
+            ],
+            "structure": [
+                {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+                {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+                {"id": "material", "field": "material", "name": "Material", "width": "50px"},
+                {"id": "spec", "field": "spec", "name": "Spec"},
+                {"id": "qty", "field": "qty", "name": "Quantity", "width": "80px"}
+            ]
+        }
     },
-    {
-      "id": "delete", "action": "delete", "name": "Delete",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
+    "detail": {
+        "columns": 2,
+        "detailEditActions": [
+            {"id": "saveDetail", "action": "saveDetail", "name": "Save Detail"},
+            {"id": "resetDetail", "action": "resetDetail", "name": "Reset Detail"}
+        ],
+        "detailEditFields": [
+            {"id": "material", "type": "string", "field": "material", "name": "Material"},
+            {"id": "owner", "type": "string", "field": "owner", "name": "Spec"},
+            {"id": "count", "type": "number", "field": "count", "name": "Quantity"}
+        ]
     }
-  ],
-  "listStructure": [
-    {"id": "order", "field": "order", "name": "Order", "width": "30px"},
-    {"id": "id", "field": "id", "name": "ID", "width": "30px"},
-    {"id": "no", "field": "no", "name": "Bill No", "width": "100px"},
-    {"id": "owner", "field": "owner", "name": "Owner"},
-    {"id": "count", "field": "count", "name": "Count", "width": "80px"}
-  ],
-  "headerActions":[
-    {"id": "save", "action": "save", "name": "Save"},
-    {"id": "reset", "action": "reset", "name": "Reset"}
-  ],
-  "headerFields": [
-    {"id": "no", "type": "string", "field": "no", "name": "Bill No"},
-    {"id": "owner", "type": "string", "field": "owner", "name": "Owner"},
-    {"id": "count", "type": "number", "field": "count", "name": "Count"}
-  ],
-  "detailActions": [
-    {
-      "id": "newDetail", "action": "newDetail", "name": "New Detail",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
-    },
-    {
-      "id": "editDetail", "action": "editDetail", "name": "Edit Detail",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconWikiword"}
-    },
-    {
-      "id": "deleteDetail", "action": "deleteDetail", "name": "Delete Detail",
-      "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
-    }
-  ],
-  "detailStructure": [
-    {"id": "order", "field": "order", "name": "Order", "width": "30px"},
-    {"id": "id", "field": "id", "name": "ID", "width": "30px"},
-    {"id": "material", "field": "material", "name": "Material", "width": "50px"},
-    {"id": "spec", "field": "spec", "name": "Spec"},
-    {"id": "qty", "field": "qty", "name": "Quantity", "width": "80px"}
-  ],
-  "detailEditActions":[
-    {"id": "saveDetail", "action": "saveDetail", "name": "Save Detail"},
-    {"id": "resetDetail", "action": "resetDetail", "name": "Reset Detail"}
-  ],
-  "detailEditFields": [
-    {"id": "material", "type": "string", "field": "material", "name": "Material"},
-    {"id": "owner", "type": "string", "field": "owner", "name": "Spec"},
-    {"id": "count", "type": "number", "field": "count", "name": "Quantity"}
-  ]
 }

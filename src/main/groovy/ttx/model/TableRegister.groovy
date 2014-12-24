@@ -1,11 +1,14 @@
 package ttx.model
 
 import groovy.json.JsonSlurper
+import ttx.model.meta.Field
+import ttx.model.meta.FieldType
+import ttx.model.meta.MetaTable
 
 /**
  * Created by journey on 14-12-11.
  */
-class TableCenter {
+class TableRegister {
     private static Map<String, MetaTable> tableMapping = [:]
 
     static Map getTableMapping() {
@@ -28,7 +31,7 @@ class TableCenter {
         def dir = '/home/journey/day/svn/cbt/src/main/resources/config/tables'
         new File(dir).listFiles().each { File f ->
             def json = readTableFromFile(f)
-            def fields=[]
+            def fields = []
             json.fields.each { k, v ->
                 fields.add(new Field(
                         columnName: k,

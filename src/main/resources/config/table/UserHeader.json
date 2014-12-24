@@ -1,0 +1,13 @@
+{
+    "key": "User",
+    "header": "UserHeader",
+    "details": [
+        {
+            "key": "UserRole",
+            "references": [
+                {"principal": "no", "subordinate": "user_no"},
+                {"principal": "app_id", "subordinate": "app_id"}
+            ]
+        }
+    ]
+}

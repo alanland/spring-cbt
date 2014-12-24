@@ -10,28 +10,28 @@ import ttx.model.BaseModel
 class BaseService {
     JdbcTemplate template
 
-    BaseModel header
-    BaseModel line
+//    BaseModel header
+//    BaseModel line
 
     BaseService() {
         template = JdbcUtil.getTemplate()
     }
 
-    /**
-     * List data
-     * @return
-     */
-    List<Map<String, Object>> getList() {
-        template.queryForList("select * from ${header.headerTableName} where 1=1 ")
-    }
-
-    /**
-     * details data
-     * @param billId
-     * @return
-     */
-    List<Map<String, Object>> getLineList(long billId) {
-        template.queryForList("select * from ${header.lineTableName} where bill_id=${billId} ")
-    }
+//    /**
+//     * List data
+//     * @return
+//     */
+//    List<Map<String, Object>> getList() {
+//        template.queryForList("select * from ${header.headerTableName} where 1=1 ")
+//    }
+//
+//    /**
+//     * details data
+//     * @param billId
+//     * @return
+//     */
+//    List<Map<String, Object>> getLineList(long billId) {
+//        template.queryForList("select * from ${header.lineTableName} where bill_id=${billId} ")
+//    }
 
 }

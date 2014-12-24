@@ -1,14 +1,14 @@
 package ttx
 
-import ttx.model.MetaTable
-import ttx.model.TableCenter
+import ttx.model.meta.MetaTable
+import ttx.model.TableRegister
 import ttx.util.Pinyin
 
 class TableCenterTest extends GroovyTestCase {
 
     void testLoad() {
-        TableCenter.loadTables()
-        MetaTable model = TableCenter.getModel('owner')
+        TableRegister.loadTables()
+        MetaTable model = TableRegister.getModel('owner')
         assertEquals('owner', model.key)
         assertEquals(3, model.fields.size())
 

@@ -1,5 +1,5 @@
 {
-  "key": "owner",
+  "key": "Owner",
   "tableName": "wm_owner",
   "prefix": "",
   "idColumnName": "id",

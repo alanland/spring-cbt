@@ -1,11 +1,12 @@
 package ttx.controller
 
 import com.gemstone.org.json.JSONObject
+import groovy.json.JsonSlurper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import ttx.service.base.BaseService
 import ttx.service.RegistryCenter
+import ttx.service.base.CreationService
 
 /**
  * Created by journey on 14-12-5.
@@ -13,11 +14,79 @@ import ttx.service.RegistryCenter
 @RestController
 @RequestMapping('/rest/creation')
 class CreationController {
-    private final BaseService service = new BaseService()
+    private final CreationService service = new CreationService()
 
     @RequestMapping('billMapping')
+    @Deprecated
     def billMapping() {
         RegistryCenter.getMapping()
+    }
+
+    // 获取数据库所有表
+    @RequestMapping('tables')
+    def tables() {
+        def list = []
+        service.getTables().each {
+            list.add(id: it, name: it)
+        }
+        list
+    }
+
+    // 获取所有字段
+    @RequestMapping('tables/{table}/fields')
+    def fields(@PathVariable("table") String table) {
+        service.getFields(table)
+    }
+
+    @RequestMapping(value = 'tables/{table}', method = RequestMethod.POST)
+    def createTableModel(@PathVariable("table") table, @RequestBody Map map) {
+
+    }
+
+    // 获取所有表模型定义
+    @RequestMapping(value='tableModels',method=RequestMethod.GET)
+    def tableModels(){
+        def list = service.getTemplate().queryForList('select * from ttx_table_model')
+        list.collect { Map map->
+            new JsonSlurper().parseText(map.structure) as Map
+        }
+    }
+
+    // 新建表模型
+    @RequestMapping(value = 'tableModels', method = RequestMethod.POST, consumes = 'application/json')
+    def createTableModel(@RequestBody Map map) {
+        JdbcTemplate template = service.getTemplate()
+        String key = map['key']
+        int count = template.queryForObject("select count(key) from ttx_table_model where key=?", Integer.class, key)
+        if (count > 0)
+            return [code: '1', desc: "key [${key}] existed"]
+        String sql = "insert into ttx_table_model(version,key,structure) values(1,?,?)"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, key, (map as JSONObject).toString())
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
+    }
+    // 更新表模型
+    @RequestMapping(value = 'tableModels', method = RequestMethod.PUT, consumes = 'application/json')
+    def updateTableModel(@RequestBody Map map) {
+        JdbcTemplate template = service.getTemplate()
+        String key = map['key']
+        int count = template.queryForObject("select count(key) from ttx_table_model where key=?", Integer.class, key)
+        if (count != 0)
+            return [code: '1', desc: "key [${key}] not existed"]
+        String sql = "update ttx_table_model set structure=? where key=?"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, (map as JSONObject).toString(), key)
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
     }
 
     /**

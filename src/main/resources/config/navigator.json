@@ -1,6 +1,8 @@
 [
     {"id": "root", "name": "TTX", "tid": "root"},
-    {"id": "user", "name": "User", "type": "bill", "tid": "User", "parent": "root", "oid": "user"},
+    {"id": "user", "name": "User", "type": "bill", "tid": "User", "parent": "root", "oid": ""},
+    {"id": "user2", "name": "User", "type": "bill", "tid": "User", "parent": "root", "oid": ""},
+    {"id": "creation", "name": "Creation", "type": "amd", "tid": "ttx/dijit/wso/Creation", "parent": "root", "oid": ""},
     {"id": "basis", "name": "Basis Data", "tid": "continent", "parent": "root"},
     {"id": "basis_general", "name": "General", "tid": "country", "parent": "basis"},
     {"id": "owner", "name": "Owner", "tid": "city", "parent": "basis_general"},

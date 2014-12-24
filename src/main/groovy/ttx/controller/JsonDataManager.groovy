@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ttx.util.json.ResourceLoader
 
+/**
+ * 获取一些客户端界面元素的数据，比如菜单，导航，单据结构
+ */
 @RestController
 @RequestMapping('/rest/data')
 class JsonDataManager {

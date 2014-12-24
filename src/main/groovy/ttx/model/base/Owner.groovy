@@ -1,6 +1,6 @@
 package ttx.model.base
 
-import ttx.model.TableModel
+import ttx.model.meta.TableModel
 
 /**
  * Created by journey on 14-12-11.

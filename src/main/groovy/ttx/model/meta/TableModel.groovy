@@ -1,7 +1,6 @@
-package ttx.model
+package ttx.model.meta
 
 import org.codehaus.jackson.annotate.JsonIgnore
-
 
 /**
  * Created by journey on 14-12-11.
@@ -9,15 +8,12 @@ import org.codehaus.jackson.annotate.JsonIgnore
 class TableModel {
     @JsonIgnore
     MetaTable metaTable
-    Long id
-    String billNo
-    Long headerId
     @JsonIgnore
     Map<String, Object> valueMap
 
     TableModel() {}
 
-    private TableModel(String key) {
+    protected TableModel(String key) {
 
     }
 

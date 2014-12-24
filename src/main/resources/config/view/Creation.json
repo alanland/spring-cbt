@@ -1,0 +1,91 @@
+{
+    "tableModel": {
+        "fields": [
+            {"id": "key", "type": "string", "field": "key", "name": "Key"},
+            {
+                "id": "tableName", "type": "filteringSelect", "field": "tableName", "name": "Table Name",
+                "args": {"url": "/rest/creation/tables", "searchAttr": "name"}
+            },
+            {
+                "id": "description", "type": "string", "field": "description", "name": "Description"
+            },
+            {
+                "id": "idColumnName", "type": "filteringSelect", "field": "idColumnName", "name": "ID Column",
+                "args": {"searchAttr": "field", "labelAttr": "name"}
+            }
+        ],
+        "grid": {
+            "name": "Table Fields",
+            "actions": [
+                {
+                    "id": "deleteDetail", "action": "removeTableModelSelectRows", "name": "Delete Detail",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"}
+                },
+                {
+                    "id": "deleteDetail", "action": "", "name": "drop down 1",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"},
+                    "dropDown": [
+                        {
+                            "id": "newDetail1", "action": "", "name": "some button1",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        },
+                        {
+                            "id": "newDetail2", "action": "", "name": "some button2",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        },
+                        {
+                            "id": "newDetail3", "action": "", "name": "some button3",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        }
+                    ]
+                },
+                {
+                    "id": "deleteDetail", "action": "test", "name": "drop down 2",
+                    "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconDelete"},
+                    "dropDown": [
+                        {
+                            "id": "newDetail1", "action": "", "name": "some button1",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        },
+                        {
+                            "id": "newDetail2", "action": "", "name": "some button2",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        },
+                        {
+                            "id": "newDetail3", "action": "", "name": "some button3",
+                            "args": {"showLabel": true, "iconClass": "dijitEditorIcon dijitEditorIconCopy"}
+                        }
+                    ]
+                }
+            ],
+            "structure": [
+                {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+                {"id": "field", "field": "field", "name": "Column Name", "width": "200px"},
+                {"id": "name", "field": "name", "name": "Name", "width": "200px", "editable": true},
+                {"id": "type", "field": "type", "name": "Type", "width": "100px"}
+            ]
+        }
+    },
+    "billModel":{
+        "fields":[
+            {"id": "key", "type": "string", "field": "key", "name": "Key"},
+            {
+                "id": "header", "type": "filteringSelect", "field": "header", "name": "Header",
+                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+            },
+            {
+                "id": "detail", "type": "filteringSelect", "field": "detail", "name": "Detail",
+                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+            },
+            {
+                "id": "principal", "type": "filteringSelect", "field": "principal", "name": "Header Column",
+                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+            },
+            {
+                "id": "subordinate", "type": "filteringSelect", "field": "subordinate", "name": "Detail Column",
+                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+            }
+        ]
+    }
+
+}

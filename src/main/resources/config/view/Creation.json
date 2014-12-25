@@ -66,26 +66,27 @@
             ]
         }
     },
-    "billModel":{
-        "fields":[
+    "billModel": {
+        "fields": [
             {"id": "key", "type": "string", "field": "key", "name": "Key"},
+            {"id": "description", "type": "string", "field": "description", "name": "Description"},
             {
                 "id": "header", "type": "filteringSelect", "field": "header", "name": "Header",
-                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+                "args": {"searchAttr": "key"}
             },
             {
                 "id": "detail", "type": "filteringSelect", "field": "detail", "name": "Detail",
-                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+                "args": {"searchAttr": "key", "required": false}
             },
             {
                 "id": "principal", "type": "filteringSelect", "field": "principal", "name": "Header Column",
-                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+                "layout": {"wrap": true},
+                "args": {"searchAttr": "field", "required": false}
             },
             {
                 "id": "subordinate", "type": "filteringSelect", "field": "subordinate", "name": "Detail Column",
-                "args": {"url": "/rest/creation/tableModels", "searchAttr": "key"}
+                "args": {"searchAttr": "field", "required": false}
             }
         ]
     }
-
 }

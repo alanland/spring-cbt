@@ -1,90 +1,35 @@
 {
-    "key": "user", "description": "xxx",
-    "bill": {"columns": 2, "actions": [], "fields": [], "grid": {"actions": [], "structure": []}}, "list": {
-    "columns": 2, "actions": [], "fields": [
-        {
-            "type": "string",
-            "operator": "=",
-            "table": "user_header",
-            "name": "xxxx",
-            "id": "xxxx",
-            "_attrPairNames": {
-                "url": {"s": "_urlSetter", "g": "_urlGetter"},
-                "handleAs": {"s": "_handleAsSetter", "g": "_handleAsGetter"},
-                "checkedStrict": {"s": "_checkedStrictSetter", "g": "_checkedStrictGetter"},
-                "store": {"s": "_storeSetter", "g": "_storeGetter"},
-                "query": {"s": "_querySetter", "g": "_queryGetter"},
-                "rootLabel": {"s": "_rootLabelSetter", "g": "_rootLabelGetter"},
-                "checkedRoot": {"s": "_checkedRootSetter", "g": "_checkedRootGetter"},
-                "checkedAttr": {"s": "_checkedAttrSetter", "g": "_checkedAttrGetter"},
-                "enabledAttr": {"s": "_enabledAttrSetter", "g": "_enabledAttrGetter"},
-                "labelAttr": {"s": "_labelAttrSetter", "g": "_labelAttrGetter"},
-                "activeStack": {"s": "_activeStackSetter", "g": "_activeStackGetter"},
-                "prevNode": {"s": "_prevNodeSetter", "g": "_prevNodeGetter"},
-                "curNode": {"s": "_curNodeSetter", "g": "_curNodeGetter"},
-                "model": {"s": "_modelSetter", "g": "_modelGetter"}, "key": {"s": "_keySetter", "g": "_keyGetter"},
-                "tableName": {"s": "_tableNameSetter", "g": "_tableNameGetter"},
-                "description": {"s": "_descriptionSetter", "g": "_descriptionGetter"},
-                "idColumnName": {"s": "_idColumnNameSetter", "g": "_idColumnNameGetter"},
-                "id": {"s": "_idSetter", "g": "_idGetter"}, "field": {"s": "_fieldSetter", "g": "_fieldGetter"},
-                "name": {"s": "_nameSetter", "g": "_nameGetter"},
-                "newBtn: disabled": {"s": "_newBtn: disabledSetter", "g": "_newBtn: disabledGetter"},
-                "createBtn: disabled": {"s": "_createBtn: disabledSetter", "g": "_createBtn: disabledGetter"},
-                "updateBtn: disabled": {"s": "_updateBtn: disabledSetter", "g": "_updateBtn: disabledGetter"},
-                "header": {"s": "_headerSetter", "g": "_headerGetter"},
-                "detail": {"s": "_detailSetter", "g": "_detailGetter"},
-                "principal": {"s": "_principalSetter", "g": "_principalGetter"},
-                "subordinate": {"s": "_subordinateSetter", "g": "_subordinateGetter"},
-                "bill": {"s": "_billSetter", "g": "_billGetter"},
-                "actionJs": {"s": "_actionJsSetter", "g": "_actionJsGetter"},
-                "columns": {"s": "_columnsSetter", "g": "_columnsGetter"},
-                "value": {"s": "_valueSetter", "g": "_valueGetter"},
-                "table": {"s": "_tableSetter", "g": "_tableGetter"},
-                "type": {"s": "_typeSetter", "g": "_typeGetter"},
-                "operator": {"s": "_operatorSetter", "g": "_operatorGetter"},
-                "span": {"s": "_spanSetter", "g": "_spanGetter"}, "wrap": {"s": "_wrapSetter", "g": "_wrapGetter"},
-                "args": {"s": "_argsSetter", "g": "_argsGetter"}
-            },
-            "declaredClass": "dojo.Stateful"
-        }, {
-            "type": "string", "operator": "=", "table": "user_header", "name": "xxxx", "id": "xxxbbb",
-            "_attrPairNames": {
-                "url": {"s": "_urlSetter", "g": "_urlGetter"},
-                "handleAs": {"s": "_handleAsSetter", "g": "_handleAsGetter"},
-                "checkedStrict": {"s": "_checkedStrictSetter", "g": "_checkedStrictGetter"},
-                "store": {"s": "_storeSetter", "g": "_storeGetter"},
-                "query": {"s": "_querySetter", "g": "_queryGetter"},
-                "rootLabel": {"s": "_rootLabelSetter", "g": "_rootLabelGetter"},
-                "checkedRoot": {"s": "_checkedRootSetter", "g": "_checkedRootGetter"},
-                "checkedAttr": {"s": "_checkedAttrSetter", "g": "_checkedAttrGetter"},
-                "enabledAttr": {"s": "_enabledAttrSetter", "g": "_enabledAttrGetter"},
-                "labelAttr": {"s": "_labelAttrSetter", "g": "_labelAttrGetter"},
-                "activeStack": {"s": "_activeStackSetter", "g": "_activeStackGetter"},
-                "prevNode": {"s": "_prevNodeSetter", "g": "_prevNodeGetter"},
-                "curNode": {"s": "_curNodeSetter", "g": "_curNodeGetter"},
-                "model": {"s": "_modelSetter", "g": "_modelGetter"}, "key": {"s": "_keySetter", "g": "_keyGetter"},
-                "tableName": {"s": "_tableNameSetter", "g": "_tableNameGetter"},
-                "description": {"s": "_descriptionSetter", "g": "_descriptionGetter"},
-                "idColumnName": {"s": "_idColumnNameSetter", "g": "_idColumnNameGetter"},
-                "id": {"s": "_idSetter", "g": "_idGetter"}, "field": {"s": "_fieldSetter", "g": "_fieldGetter"},
-                "name": {"s": "_nameSetter", "g": "_nameGetter"},
-                "newBtn: disabled": {"s": "_newBtn: disabledSetter", "g": "_newBtn: disabledGetter"},
-                "createBtn: disabled": {"s": "_createBtn: disabledSetter", "g": "_createBtn: disabledGetter"},
-                "updateBtn: disabled": {"s": "_updateBtn: disabledSetter", "g": "_updateBtn: disabledGetter"},
-                "header": {"s": "_headerSetter", "g": "_headerGetter"},
-                "detail": {"s": "_detailSetter", "g": "_detailGetter"},
-                "principal": {"s": "_principalSetter", "g": "_principalGetter"},
-                "subordinate": {"s": "_subordinateSetter", "g": "_subordinateGetter"},
-                "bill": {"s": "_billSetter", "g": "_billGetter"},
-                "actionJs": {"s": "_actionJsSetter", "g": "_actionJsGetter"},
-                "columns": {"s": "_columnsSetter", "g": "_columnsGetter"},
-                "value": {"s": "_valueSetter", "g": "_valueGetter"},
-                "table": {"s": "_tableSetter", "g": "_tableGetter"}, "type": {"s": "_typeSetter", "g": "_typeGetter"},
-                "operator": {"s": "_operatorSetter", "g": "_operatorGetter"},
-                "span": {"s": "_spanSetter", "g": "_spanGetter"}, "wrap": {"s": "_wrapSetter", "g": "_wrapGetter"},
-                "args": {"s": "_argsSetter", "g": "_argsGetter"}
-            }, "declaredClass": "dojo.Stateful"
-        }
-    ], "grid": {"actions": [], "structure": []}
-}, "detail": {"columns": 2, "actions": [], "fields": []}
+  "queryFields": [
+    {"id": "code", "type": "string", "field": "code", "name": "代码", "operator": "like"},
+    {"id": "name", "type": "string", "field": "name", "name": "名称", "operator": "equals"},
+    {"id": "hintCode", "type": "string", "field": "hintCode", "name": "助记码", "operator": "between"}
+  ],
+  "listActions": [
+  ],
+  "listStructure": [
+    {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+    {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+    {"id": "no", "field": "no", "name": "单号", "width": "100px"},
+    {"id": "owner", "field": "owner", "name": "货主"},
+    {"id": "count", "field": "count", "name": "总件数", "width": "80px"}
+  ],
+  "billStructure": {
+    "headerFields": [
+      {"id": "no", "type": "string", "field": "no", "name": "单号"},
+      {"id": "owner", "type": "string", "field": "owner", "name": "货主"},
+      {"id": "count", "type": "number", "field": "count", "name": "总件数"}
+    ],
+    "detailsStructure": [
+      {"id": "order", "field": "order", "name": "Order", "width": "30px"},
+      {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+      {"id": "material", "field": "material", "name": "物料", "width": "50px"},
+      {"id": "spec", "field": "spec", "name": "规格"},
+      {"id": "qty", "field": "qty", "name": "数量", "width": "80px"}
+    ],
+    "detailEditFields": [
+      {"id": "material", "type": "string", "field": "material", "name": "物料"},
+      {"id": "owner", "type": "string", "field": "owner", "name": "规格"},
+      {"id": "count", "type": "number", "field": "count", "name": "数量"}
+    ]
+  }
 }

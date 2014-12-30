@@ -43,16 +43,15 @@ class CreationController {
 
     }
 
-
     /*
      * 表模型
      */
 
     // 获取所有表模型定义
-    @RequestMapping(value='tableModels',method=RequestMethod.GET)
-    def tableModels(){
+    @RequestMapping(value = 'tableModels', method = RequestMethod.GET)
+    def tableModels() {
         def list = service.getTemplate().queryForList('select * from ttx_table_model')
-        list.collect { Map map->
+        list.collect { Map map ->
             new JsonSlurper().parseText(map.structure) as Map
         }
     }
@@ -81,8 +80,10 @@ class CreationController {
         JdbcTemplate template = service.getTemplate()
         String key = map['key']
         int count = template.queryForObject("select count(key) from ttx_table_model where key=?", Integer.class, key)
-        if (count != 0)
-            return [code: '1', desc: "key [${key}] not existed"]
+        if (count == 0)
+            return [code: '1', desc: "key [${key}] not existed in ttx_table_model"]
+        if (count>1)
+            return [code: '1', desc: "key [${key}] more than one items in ttx_table_model"]
         String sql = "update ttx_table_model set structure=? where key=?"
         def code = '0', desc = 'ok'
         try {
@@ -95,8 +96,8 @@ class CreationController {
     }
 
     // 删除表模型
-    @RequestMapping(value='tableModels/{table}',method=RequestMethod.DELETE)
-    def deleteTableModel(@PathVariable("table") String table){
+    @RequestMapping(value = 'tableModels/{table}', method = RequestMethod.DELETE)
+    def deleteTableModel(@PathVariable("table") String table) {
         def code = '0', desc = 'ok'
         try {
             service.getTemplate().update('delete from ttx_table_model where key=?', table)
@@ -107,16 +108,15 @@ class CreationController {
         return [code: code, desc: desc]
     }
 
-
     /*
      * 单据
      */
 
     // 获取所有单据模型定义
-    @RequestMapping(value='billModels',method=RequestMethod.GET)
-    def billModels(){
+    @RequestMapping(value = 'billModels', method = RequestMethod.GET)
+    def billModels() {
         def list = service.getTemplate().queryForList('select * from ttx_bill_model')
-        list.collect { Map map->
+        list.collect { Map map ->
             new JsonSlurper().parseText(map.structure) as Map
         }
     }
@@ -145,8 +145,10 @@ class CreationController {
         JdbcTemplate template = service.getTemplate()
         String key = map['key']
         int count = template.queryForObject("select count(key) from ttx_bill_model where key=?", Integer.class, key)
-        if (count != 0)
-            return [code: '1', desc: "key [${key}] not existed"]
+        if (count == 0)
+            return [code: '1', desc: "key [${key}] not existed in ttx_bill_model"]
+        if (count>0)
+            return [code: '1', desc: "key [${key}] more than one items in ttx_bill_model"]
         String sql = "update ttx_bill_model set structure=? where key=?"
         def code = '0', desc = 'ok'
         try {
@@ -158,8 +160,8 @@ class CreationController {
         return [code: code, desc: desc]
     }
     // 删除表模型
-    @RequestMapping(value='billModels/{bill}',method=RequestMethod.DELETE)
-    def deleteBillModel(@PathVariable("bill") String bill){
+    @RequestMapping(value = 'billModels/{bill}', method = RequestMethod.DELETE)
+    def deleteBillModel(@PathVariable("bill") String bill) {
         def code = '0', desc = 'ok'
         try {
             service.getTemplate().update('delete from ttx_bill_model where key=?', bill)
@@ -170,13 +172,76 @@ class CreationController {
         return [code: code, desc: desc]
     }
 
+    /*
+     * 界面
+     */
 
+    // 获取所有界面模型定义
+    @RequestMapping(value = 'viewModels', method = RequestMethod.GET)
+    def viewModels() {
+        def list = service.getTemplate().queryForList('select * from ttx_view_model')
+        list.collect { Map map ->
+            new JsonSlurper().parseText(map.structure) as Map
+        }
+    }
 
+    // 新建表模型
+    @RequestMapping(value = 'viewModels', method = RequestMethod.POST, consumes = 'application/json')
+    def createViewModel(@RequestBody Map map) {
+        JdbcTemplate template = service.getTemplate()
+        String key = map['key']
+        int count = template.queryForObject("select count(key) from ttx_view_model where key=?", Integer.class, key)
+        if (count > 0)
+            return [code: '1', desc: "key [${key}] existed"]
+        String sql = "insert into ttx_view_model(version,key,structure) values(1,?,?)"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, key, (map as JSONObject).toString())
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
+    }
+
+    // 更新表模型
+    @RequestMapping(value = 'viewModels', method = RequestMethod.PUT, consumes = 'application/json')
+    def updateViewModel(@RequestBody Map map) {
+        JdbcTemplate template = service.getTemplate()
+        String key = map['key']
+        int count = template.queryForObject("select count(key) from ttx_view_model where key=?", Integer.class, key)
+        if (count ==0)
+            return [code: '1', desc: "key [${key}] not existed in ttx_view_model "]
+        if (count>1)
+            return [code: '1', desc: "key [${key}] more than one items in ttx_view_model "]
+        String sql = "update ttx_view_model set structure=? where key=?"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, (map as JSONObject).toString(), key)
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
+    }
+    // 删除表模型
+    @RequestMapping(value = 'viewModels/{bill}', method = RequestMethod.DELETE)
+    def deleteViewModel(@PathVariable("bill") String bill) {
+        def code = '0', desc = 'ok'
+        try {
+            service.getTemplate().update('delete from ttx_view_model where key=?', bill)
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
+    }
 
     /**
      * 保存结构到数据库
      */
     @RequestMapping(value = 'create', method = RequestMethod.POST)
+    @Deprecated
     Map<String, Object> create(@RequestBody Map map, BindingResult result) {
         String sql = "insert into cbt_bill_structure(bill_key, structure) values(?,?)"
         String billKey = map['billKey']
@@ -192,6 +257,7 @@ class CreationController {
     /**
      * 从数据库获取结构
      */
+    @Deprecated
     @RequestMapping(value = "billStructure/{billKey}", method = RequestMethod.GET)
     def billStructure(@PathVariable("billKey") String billKey) {
         JdbcTemplate template = service.getTemplate()

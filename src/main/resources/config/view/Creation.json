@@ -14,6 +14,12 @@
                 "args": {"searchAttr": "field", "labelAttr": "name"}
             }
         ],
+        "actions":[
+            {"id": "delete", "action": "tableModel_Delete", "name": "Delete"},
+            {"id": "new", "action": "tableModel_New", "name": "New"},
+            {"id": "create", "action": "tableModel_Create", "name": "Create"},
+            {"id": "update", "action": "tableModel_Update", "name": "Update"}
+        ],
         "grid": {
             "name": "Table Fields",
             "actions": [
@@ -59,7 +65,7 @@
                 }
             ],
             "structure": [
-                {"id": "id", "field": "id", "name": "ID", "width": "30px"},
+                {"id": "id", "field": "id", "name": "ID"},
                 {"id": "field", "field": "field", "name": "Column Name", "width": "200px"},
                 {"id": "name", "field": "name", "name": "Name", "width": "200px", "editable": true},
                 {"id": "type", "field": "type", "name": "Type", "width": "100px"}
@@ -88,5 +94,183 @@
                 "args": {"searchAttr": "field", "required": false}
             }
         ]
+    },
+    "viewModel": {
+        "viewFields": [
+            {"id": "key", "type": "string", "field": "key", "name": "Key"},
+            {"id": "bill", "type": "filteringSelect", "field": "bill", "name": "bill"},
+            {"id": "actionJs", "type": "string", "field": "actionJs", "name": "Action Js"},
+            {"id": "description", "type": "string", "field": "description", "name": "Description"}
+        ],
+        "viewActions": [
+            {"id": "delete", "action": "viewModel_Delete", "name": "Delete"},
+            {"id": "new", "action": "viewModel_New", "name": "New"},
+            {"id": "create", "action": "viewModel_Create", "name": "Create"},
+            {"id": "update", "action": "viewModel_Update", "name": "Update"}
+        ],
+        "list": {
+            "viewFields": [
+                {"id": "columns", "type": "string", "field": "columns", "name": "Columns"}
+            ],
+            "fields": {
+                "name": "Query Fields",
+                "actions": [
+                    {"id": "new", "action": "","dropDown":true, "name": "New"},
+                    {"id": "delete", "action": ":gridDeleteRow", "name": "Delete"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "table", "field": "table", "name": "Table"},
+                    {"id": "field", "field": "field", "name": "Field"},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true},
+                    {"id": "type", "field": "type", "name": "Type", "alwaysEditing": true},
+                    {
+                        "id": "operator", "field": "operator", "name": "Operator", "width": "120px",
+                        "alwaysEditing": true
+                    },
+                    {"id": "span", "field": "span", "name": "Span", "alwaysEditing": true},
+                    {"id": "wrap", "field": "wrap", "name": "Force Wrap", "alwaysEditing": true},
+                    {"id": "args", "field": "args", "name": "Args", "alwaysEditing": true}
+                ]
+            },
+            "actions": {
+                "name": "Query Actions",
+                "actions": [
+                    {"id": "new", "action": "new queryActions", "name": "New"},
+                    {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "action", "field": "action", "name": "Action", "alwaysEditing": true},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                ]
+            },
+            "grid": {
+                "fields": [
+                    {"id": "name", "type": "string", "field": "name", "name": "Name"}
+                ],
+                "actions": {
+                    "name": "Actions",
+                    "actions": [
+                        {"id": "new", "action": "new queryActions", "name": "New"},
+                        {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                    ],
+                    "structure": [
+                        {"id": "id", "field": "id", "name": "ID"},
+                        {"id": "action", "field": "action", "name": "Action", "alwaysEditing": true},
+                        {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                    ]
+                },
+                "structure": {
+                    "name": "Structure",
+                    "actions": [
+                        {"id": "new", "dropDown": true, "name": "New"},
+                        {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                    ],
+                    "structure": [
+                        {"id": "id", "field": "id", "name": "ID"},
+                        {"id": "field", "field": "field", "name": "Field", "alwaysEditing": true},
+                        {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                    ]
+                }
+            }
+        },
+        "bill": {
+            "viewFields": [
+                {"id": "columns", "type": "string", "field": "columns", "name": "Columns"}
+            ],
+            "fields": {
+                "name": "Bill Fields",
+                "actions": [
+                    {"id": "new", "action": "new", "name": "New"},
+                    {"id": "save", "action": "save", "name": "Save"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "table", "field": "table", "name": "Table", "alwaysEditing": true},
+                    {"id": "field", "field": "field", "name": "Field", "alwaysEditing": true},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true},
+                    {"id": "type", "field": "type", "name": "Type", "alwaysEditing": true},
+                    {"id": "span", "field": "span", "name": "Span", "alwaysEditing": true},
+                    {"id": "wrap", "field": "wrap", "name": "Force Wrap", "alwaysEditing": true},
+                    {"id": "args", "field": "args", "name": "Args", "alwaysEditing": true}
+                ]
+            },
+            "actions": {
+                "name": "Query Actions",
+                "actions": [
+                    {"id": "new", "action": "new queryActions", "name": "New"},
+                    {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "action", "field": "action", "name": "Action", "alwaysEditing": true},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                ]
+            },
+            "grid": {
+                "fields": [
+                    {"id": "name", "type": "string", "field": "name", "name": "Name"}
+                ],
+                "actions": {
+                    "name": "Actions",
+                    "actions": [
+                        {"id": "new", "action": "new queryActions", "name": "New"},
+                        {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                    ],
+                    "structure": [
+                        {"id": "id", "field": "id", "name": "ID"},
+                        {"id": "action", "field": "action", "name": "Action", "alwaysEditing": true},
+                        {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                    ]
+                },
+                "structure": {
+                    "name": "Structure",
+                    "actions": [
+                        {"id": "new", "action": "new queryActions", "name": "New"},
+                        {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                    ],
+                    "structure": [
+                        {"id": "id", "field": "id", "name": "ID"},
+                        {"id": "field", "field": "field", "name": "Field", "alwaysEditing": true},
+                        {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                    ]
+                }
+            }
+        },
+        "detail": {
+            "viewFields": [
+                {"id": "columns", "type": "string", "field": "columns", "name": "Columns"}
+            ],
+            "fields": {
+                "name": "Bill Fields",
+                "actions": [
+                    {"id": "new", "action": "new", "name": "New"},
+                    {"id": "save", "action": "save", "name": "Save"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "table", "field": "table", "name": "Table", "alwaysEditing": true},
+                    {"id": "field", "field": "field", "name": "Field", "alwaysEditing": true},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true},
+                    {"id": "type", "field": "type", "name": "Type", "alwaysEditing": true},
+                    {"id": "span", "field": "span", "name": "Span", "alwaysEditing": true},
+                    {"id": "wrap", "field": "wrap", "name": "Force Wrap", "alwaysEditing": true},
+                    {"id": "args", "field": "args", "name": "Args", "alwaysEditing": true}
+                ]
+            },
+            "actions": {
+                "name": "Query Actions",
+                "actions": [
+                    {"id": "new", "action": "new queryActions", "name": "New"},
+                    {"id": "delete", "action": "delete queryActions", "name": "Delete"}
+                ],
+                "structure": [
+                    {"id": "id", "field": "id", "name": "ID"},
+                    {"id": "action", "field": "action", "name": "Action", "alwaysEditing": true},
+                    {"id": "name", "field": "name", "name": "Name", "alwaysEditing": true}
+                ]
+            }
+        }
     }
 }

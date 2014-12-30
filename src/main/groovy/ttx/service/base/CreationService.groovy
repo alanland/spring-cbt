@@ -36,7 +36,7 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
         (1..meta.columnCount).collect { index ->
             String columnName = meta.getColumnName(index)
             [
-                    "id"   : Math.random(),
+                    "id"   : columnName,
                     'field': columnName,
                     'name' : columnName,
                     'type' : FieldType.getType(meta.getColumnTypeName(index)) // TODO

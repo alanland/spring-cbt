@@ -1,5 +1,6 @@
 package ttx.controller
 
+import com.gemstone.org.json.JSONArray
 import com.gemstone.org.json.JSONObject
 import groovy.json.JsonSlurper
 import org.springframework.jdbc.core.JdbcTemplate
@@ -20,6 +21,31 @@ class CreationController {
     @Deprecated
     def billMapping() {
         RegistryCenter.getMapping()
+    }
+
+    // 获取数据库所有表
+    @RequestMapping(value='navigator', method=RequestMethod.GET)
+    def navigator() {
+        service.getTemplate().queryForMap('select * from ttx_navigator').structure
+    }
+
+    // 更新表模型
+    @RequestMapping(value = 'navigator', method = RequestMethod.PUT, consumes = 'application/json')
+    def updateNavigator(@RequestBody Map map) {
+        JdbcTemplate template = service.getTemplate()
+        String key = map['key']
+        int count = template.queryForObject("select count(*) from ttx_navigator ", Integer.class)
+        String sql = "update ttx_navigator set structure=?"
+        if (count == 0)
+            sql = "insert into ttx_navigator (version,role_no,structure) values(0,'',?)"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, (map.data as JSONArray).toString())
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
     }
 
     // 获取数据库所有表
@@ -236,6 +262,7 @@ class CreationController {
         }
         return [code: code, desc: desc]
     }
+
 
     /**
      * 保存结构到数据库

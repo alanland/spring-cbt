@@ -31,11 +31,43 @@ class RestTableController {
         [code: 0]
     }
 
+    @RequestMapping(value = '{tableKey}', method = RequestMethod.PUT, consumes = 'application/json')
+    def update(@PathVariable("tableKey") String tableKey, @RequestBody Map map) {
+        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        JdbcTemplate template = JdbcUtil.getTemplate()
+        def id = map[tableModel.idColumnName]
+        int count = template.queryForObject(
+                "select count(1) from ${tableModel.tableName} where ${tableModel.idColumnName}=?",
+                Integer.class, id
+        )
+        if (count != 1) {
+            return [code: 1, desc: "$count items exist in ${tableModel.tableName}"]
+        }
+        def where = []
+        where[tableModel.idColumnName] = map.get(tableModel.idColumnName)
+        map.remove(tableModel.idColumnName)
+        JdbcUtil.getUpdate().withTableName(tableModel.tableName).execute(map, where)
+        [code: 0]
+    }
+
+    @RequestMapping(value = '{tableKey}/{id}', method = RequestMethod.GET)
+    def get(@PathVariable("tableKey") String tableKey, @PathVariable("id") String idStr, HttpServletRequest request) {
+        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        JdbcTemplate template = JdbcUtil.getTemplate()
+        def item = tableModel.fields.find {
+            it.field == tableModel.idColumnName
+        }
+        def id = item.type == 'integer' ? Long.valueOf(idStr) : idStr
+        template.queryForMap("select * from ${tableModel.tableName} where ${tableModel.idColumnName}=?", id)
+    }
+
+
     @RequestMapping(value = '{tableKey}', method = RequestMethod.GET)
-    def getTable(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
+    def getList(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
         // 根据key名称获得表名称
         Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
         String tableName = tableModel.tableName
+        String bill = request.getHeader('X-Bill') // 是否是单据的查询，可能多表
 
         // 查询范围
         def begin = 0, end = 99
@@ -50,36 +82,49 @@ class RestTableController {
 
         // filter
         def content = 'h.*'
-        def sql = "select {content} from ${tableName} h "
-        def where = ' where 1=1 '
+        StringBuilder sql = new StringBuilder("select {content} from ${tableName} h ")
+        def where = new StringBuilder(' where 1=1 ')
         def filter = request.getHeader('filter')
         def values = []
         if (filter) {
-            def headerWhere = new StringBuilder()
-            def headerValues = []
-            def detailWhere = new StringBuilder()
-            def detailValues = []
-            def json = new JsonSlurper().parseText(filter)
-            json['and'].each { c ->
-                def tmpWhere, tmpValues, alis
-                boolean isHeader = c.table == tableKey // todo 单据连表
-                tmpWhere = isHeader ? headerWhere : detailWhere
-                tmpValues = isHeader ? headerValues : detailValues
-                alis = isHeader ? 'h.' : 'd.'
-                tmpWhere.append(" and ${alis}${c.field} ${c.operator} ? ")
-                if (c.operator == 'like') { // todo ->operator
-                    tmpValues.add("%${c.value}%")
-                } else {
-                    tmpValues.add(c.value)
+            if (bill) { // 多表查询
+                def headerWhere = new StringBuilder()
+                def headerValues = []
+                def detailWhere = new StringBuilder()
+                def detailValues = []
+                def json = new JsonSlurper().parseText(filter)
+                json['and'].each { c ->
+                    def tmpWhere, tmpValues, alis
+                    boolean isHeader = c.table == tableKey // todo 单据连表
+                    tmpWhere = isHeader ? headerWhere : detailWhere
+                    tmpValues = isHeader ? headerValues : detailValues
+                    alis = isHeader ? 'h.' : 'd.'
+                    tmpWhere.append(" and ${alis}${c.field} ${c.operator} ? ")
+                    if (c.operator == 'like') { // todo ->operator
+                        tmpValues.add("%${c.value}%")
+                    } else {
+                        tmpValues.add(c.value)
+                    }
                 }
+                if (detailValues) {
+                    sql = 'select {content} from ${headerTableName} h ' // todo
+                }
+                sql.append where
+                sql.append headerWhere
+                sql.append detailWhere
+                values = headerValues + detailValues
+            } else { // 单表查询
+                def json = new JsonSlurper().parseText(filter)
+                json['and'].each { c ->
+                    where.append(" and ${c.field} ${c.operator ?: '='} ? ")
+                    if (c.operator == 'like') { // todo ->operator
+                        values.add("%${c.value}%")
+                    } else {
+                        values.add(c.value)
+                    }
+                }
+                sql.append where
             }
-            if (detailValues) {
-                sql = 'select {content} from ${headerTableName} h ' // todo
-            }
-            sql += where
-            sql += headerWhere.toString()
-            sql += detailWhere.toString()
-            values = headerValues + detailValues
         }
 
         // 排序
@@ -106,8 +151,8 @@ class RestTableController {
         // 分页数据
         JdbcTemplate template = JdbcUtil.getTemplate()
 //        def res = template.queryForMap(sql.replace('{content}', content), values.toArray())
-        def count = template.queryForObject(sql.replace('{content}', 'count(1)'), Integer.class, values.toArray())
-        def page = new PostgresPagination(sql.replace('{content}', content), template, begin, end, values.toArray())
+        def count = template.queryForObject(sql.toString().replace('{content}', 'count(1)'), Integer.class, values.toArray())
+        def page = new PostgresPagination(sql.toString().replace('{content}', content), template, begin, end, values.toArray())
 //        def res = template.query(  // todo 参考代码
 //                sql.toString(),
 //                new RowMapper() {
@@ -126,6 +171,23 @@ class RestTableController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Range", "items $begin-$end/${count}");
         new ResponseEntity(page.getRows(), responseHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = '{tableKey}', method = RequestMethod.DELETE, consumes = 'application/json')
+    def deleteTable(@PathVariable('tableKey') String tableKey, @RequestBody Map map) {
+        List list = map.items
+        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        String idColumn = tableModel.idColumnName
+        def item = tableModel.fields.find {
+            it.field == idColumn
+        }
+        if (item.type == 'string')
+            list = list.collect {
+                "'$it'"
+            }
+        String sql = "delete from ${tableModel.tableName} where ${idColumn} in(${list.join(',')})"
+        JdbcUtil.getTemplate().update(sql)
+        [code: 0]
     }
 
 }

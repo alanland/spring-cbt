@@ -10,6 +10,7 @@ import ttx.util.json.ResourceLoader
  */
 @RestController
 @RequestMapping('/rest/data')
+@Deprecated
 class JsonDataManager {
     @RequestMapping('navigator')
     def navigator() {

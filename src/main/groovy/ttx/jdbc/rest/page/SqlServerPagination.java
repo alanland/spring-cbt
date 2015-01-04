@@ -22,11 +22,11 @@ public class SqlServerPagination extends Pagination {
     }
 
     @Override
-    String getPageSql(String queryString, NamedParameterJdbcTemplate template, int startIndex, int pageSize) {
-        return getMSSQLPageSQL(queryString, template, startIndex, pageSize, "Id");
+    String getPageSql(String queryString, int startIndex, int pageSize) {
+        return getMSSQLPageSQL(queryString, startIndex, pageSize, "Id");
     }
 
-    public String getMSSQLPageSQL(String queryString, NamedParameterJdbcTemplate template, int startIndex, int pageSize, String pagingOrderBy) {
+    public String getMSSQLPageSQL(String queryString, int startIndex, int pageSize, String pagingOrderBy) {
         StringBuilder sbSql = null;
         StringBuilder sbPageSql = null;
         int idxOfFrom = -1;

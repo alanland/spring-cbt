@@ -22,7 +22,7 @@ public class MySqlPagination extends Pagination{
     }
 
     @Override
-    String getPageSql(String queryString, NamedParameterJdbcTemplate template, int startIndex, int pageSize) {
+    String getPageSql(String queryString, int startIndex, int pageSize) {
         String result = "";
         result = queryString + " limit " + startIndex + "," + pageSize;
         return result;

@@ -1,5 +1,6 @@
 package ttx.jdbc.rest.page;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
@@ -44,20 +45,33 @@ public abstract class Pagination implements Serializable {
             throw new IllegalArgumentException("sql is blank , pls initialize ... ");
         }
         setNumPerPage(numPerPage);
-
         setCurrentPage(currentPage);
-
         setTotal(template.queryForObject(" select count(1) from ( " + sql + " ) t", params, Integer.class));
         setTotalPages();
         setStartIndex();
         setLastIndex();
-
-//        if (dbType, "MySQL")
-        setRows(template.queryForList(getPageSql(sql, template, startIndex, numPerPage), params));
-//        else if (StringUtils.equals(dbType, "MSSQL"))
+        setRows(template.queryForList(getPageSql(sql, startIndex, numPerPage), params));
     }
 
-    abstract String getPageSql(String queryString, NamedParameterJdbcTemplate template, int startIndex, int pageSize);
+    public Pagination(String sql, JdbcTemplate template, int begin, int end, Object[] params) {
+        int numPerPage = end - begin + 1;
+        int currentPage = end / numPerPage + 1;
+        if (template == null) {
+            throw new IllegalArgumentException(
+                    "template is null , pls initialize ... ");
+        } else if (StringUtils.isEmpty(sql)) {
+            throw new IllegalArgumentException("sql is blank , pls initialize ... ");
+        }
+        setNumPerPage(numPerPage);
+        setCurrentPage(currentPage);
+        setTotal(template.queryForObject(" select count(1) from ( " + sql + " ) t", Integer.class, params));
+        setTotalPages();
+        setStartIndex();
+        setLastIndex();
+        setRows(template.queryForList(getPageSql(sql, startIndex, numPerPage), params));
+    }
+
+    abstract String getPageSql(String queryString, int startIndex, int pageSize);
 
     private void setTotalPages() {
         if (total % numPerPage == 0) {

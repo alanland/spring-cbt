@@ -3,7 +3,9 @@ package ttx.jdbc
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.jdbc.datasource.SimpleDriverDataSource
+import paillard.florent.springframework.simplejdbcupdate.SimpleJdbcUpdate
 import ttx.model.outbound.ShipHeader
 
 import java.sql.Driver
@@ -14,7 +16,10 @@ import java.util.concurrent.atomic.AtomicLong
 
 class JdbcUtil {
 
+    static SimpleDriverDataSource dataSource = null
     static JdbcTemplate template = null
+    static SimpleJdbcInsert insert = null
+    static SimpleJdbcUpdate update = null
 
     private static final AtomicLong counter = new AtomicLong();
 
@@ -30,9 +35,10 @@ class JdbcUtil {
         typeMap.get(driver.getClass(), DatabaseType.unknown)
     }
 
-    static JdbcTemplate getTemplate() {
-        if (!template) {
-            SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+    static def getDataSource() {
+        if (!dataSource) {
+            dataSource = new SimpleDriverDataSource();
             dataSource.setDriverClass(org.h2.Driver.class);
             dataSource.setUsername("sa");
             dataSource.setUrl("jdbc:h2:mem");
@@ -44,11 +50,28 @@ class JdbcUtil {
                     password: 'wang',
                     url: 'jdbc:postgresql://localhost/wang'
             )
+        }
+        dataSource
+    }
 
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    static JdbcTemplate getTemplate() {
+        if (!template) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
             template = jdbcTemplate
         }
         template
+    }
+
+    static SimpleJdbcInsert getInsert() {
+//        if (!insert) {
+//            insert = new SimpleJdbcInsert(dataSource)
+//        }
+//        insert
+        new SimpleJdbcInsert(getDataSource())
+    }
+
+    static SimpleJdbcUpdate getUpdate() {
+        new SimpleJdbcUpdate(getDataSource())
     }
 
     static void initData() {

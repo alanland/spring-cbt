@@ -68,6 +68,14 @@ class RestTableController {
         Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
         String tableName = tableModel.tableName
         String bill = request.getHeader('X-Bill') // 是否是单据的查询，可能多表
+        // 返回查询字段，如果客户端有指定，返回指定的
+        String content = 'h.*'
+        String resultFields = request.getHeader('X-Result-Fields')
+        if (resultFields) {
+            content = resultFields.split(',').collect({
+                'h.' + it
+            }).join(',')
+        }
 
         // 查询范围
         def begin = 0, end = 99
@@ -81,7 +89,6 @@ class RestTableController {
         max = end - begin + 1
 
         // filter
-        def content = 'h.*'
         StringBuilder sql = new StringBuilder("select {content} from ${tableName} h ")
         def where = new StringBuilder(' where 1=1 ')
         def filter = request.getHeader('filter')

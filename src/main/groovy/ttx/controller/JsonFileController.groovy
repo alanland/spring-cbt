@@ -9,9 +9,8 @@ import ttx.util.json.ResourceLoader
  * 获取一些客户端界面元素的数据，比如菜单，导航，单据结构
  */
 @RestController
-@RequestMapping('/rest/data')
-@Deprecated
-class JsonDataManager {
+@RequestMapping('/rest/jf')
+class JsonFileController {
     @RequestMapping('navigator')
     def navigator() {
         ResourceLoader.getJsonStringByFile('navigator')
@@ -20,11 +19,6 @@ class JsonDataManager {
     @RequestMapping('menu')
     def menu() {
         ResourceLoader.getJsonStringByFile('menu')
-    }
-
-    @RequestMapping('wsoDefinition/{tid}')
-    def wsoDefinition(@PathVariable String tid) {
-        tid // todo
     }
 
     @RequestMapping('billDefinition/{tid}')

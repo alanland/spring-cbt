@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 @RestController
 @RequestMapping('/rest/ship')
+@Deprecated
 class ShipController extends BaseController {
     private final AtomicLong counter = new AtomicLong();
     private final ShipService service = new ShipService()

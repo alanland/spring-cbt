@@ -16,7 +16,7 @@ class SequenceGenerator {
     static final AtomicLong sequence = new AtomicLong()
 
     static long next() {
-        long s = sequence.incrementAndGet();
+        long s = sequence.incrementAndGet()
         def template = JdbcUtil.getTemplate()
         int count = template.queryForObject("select count(1) from ${TABLE}", Integer.class)
         if (count == 0) {

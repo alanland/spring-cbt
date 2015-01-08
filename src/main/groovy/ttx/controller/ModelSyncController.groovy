@@ -25,7 +25,7 @@ class ModelSyncController {
             File dir = new File(filePath, table)
             File backupDir = new File(backupPath, table)
             if (!dir.exists()) dir.mkdirs()
-            if (!backupDir.exists()) backupDir.exists()
+            if (!backupDir.exists()) backupDir.mkdirs()
             service.getModels(table).each { model ->
                 def json = JsonOutput.prettyPrint(JsonOutput.toJson(model))
                 new File(dir, "${model.key}.json").withPrintWriter { out ->

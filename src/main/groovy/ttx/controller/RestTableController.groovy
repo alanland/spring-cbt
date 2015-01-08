@@ -26,6 +26,22 @@ class RestTableController {
     @RequestMapping(value = '{tableKey}', method = RequestMethod.POST, consumes = 'application/json')
     def create(@PathVariable("tableKey") String tableKey, @RequestBody Map map) {
         Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        // TODO 独立成单独的模块
+        if (tableModel.autoNoExpression && !map[tableModel.autoNoExpression]) {
+            def no = tableModel.autoNoExpression.replaceAll(/\{.*?\}/) { String m ->
+                String exp = m.substring(1, m.length() - 1)
+                if (exp.matches(/\d*/)) {
+                    String.format("%0${exp.length()}d", SequenceGenerator.next())
+                } else {
+                    new Date().format(exp)
+                }
+            }
+            tableModel.fields.each {
+                if (it.autoNo && it.autoNo=='1'){
+                    map[it.field]=no
+                }
+            }
+        }
         map[tableModel.idColumnName] = SequenceGenerator.next()
         JdbcUtil.getInsert().withTableName(tableModel.tableName).execute(map)
         [code: 0]

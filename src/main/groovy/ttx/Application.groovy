@@ -15,6 +15,5 @@ class Application {
         SequenceGenerator.syncFromDb()
         new CreationService().buildCache()
         SpringApplication.run(Application.class, args)
-
     }
 }

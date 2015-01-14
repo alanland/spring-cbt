@@ -1,0 +1,77 @@
+{
+    "key": "user",
+    "billKey": "template",
+    "description": "Bill Template",
+    "actionJs": "",
+    "bill": {
+        "actions": {
+            "actionsExportId": "bill",
+            "items": [
+                {"action": ":create", "id": "save", "name": "Save"}
+            ]
+        },
+        "columns": "2",
+        "fields": [
+            {
+                "args": "disabled:true", "disabled": "1", "field": "code", "id": "code", "name": "Code",
+                "operator": "=",
+                "type": "string"
+            },
+            {"disabled": "1", "field": "name", "id": "name", "name": "Name", "operator": "=", "type": "string"},
+            {"field": "hincode", "id": "hincode", "name": "Hintcode", "operator": "=", "type": "string"},
+            {"field": "department", "id": "department", "name": "Department", "operator": "=", "type": "string"},
+            {"field": "remark", "id": "remark", "name": "Remark", "operator": "=", "type": "string"}
+        ],
+        "grid": {
+            "actions": {
+                "actionsExportId": "details",
+                "items": [
+                    {"action": ":newDetail", "id": "new", "name": "New Detail"},
+                    {"action": ":deleteDetail", "id": "delete", "name": "Delete Detail"}
+                ]
+            },
+            "name": "Details",
+            "structure": [
+                {"field": "role_code", "id": "role_code", "name": "role_code"}
+            ]
+        }
+    },
+    "detail": {
+        "actions": {
+            "actionsExportId": "detail",
+            "items": [
+                {"action": ":createDetail", "id": "save", "name": "Save"}
+            ]
+        },
+        "columns": "2",
+        "fields": [
+            {"field": "user_code", "id": "user_code", "name": "User Code", "operator": "=", "type": "string"},
+            {"field": "role_code", "id": "role_code", "name": "Role Code", "operator": "=", "type": "string"}
+        ]
+    },
+    "list": {
+        "actions": {
+            "actionsExportId": "list",
+            "items": [
+                {"action": ":query", "id": "query", "name": "Query"}
+            ]
+        },
+        "columns": "2",
+        "fields": [],
+        "grid": {
+            "actions": {
+                "actionsExportId": "bills",
+                "items": [
+                    {"action": ":new", "id": "new", "name": "New"},
+                    {"action": ":delete", "id": "delete", "name": "Delete"}
+                ]
+            },
+            "name": "List",
+            "structure": [
+                {"field": "code", "id": "code", "name": "Code"},
+                {"field": "name", "id": "name", "name": "Name"},
+                {"field": "department", "id": "department", "name": "Department"}
+            ]
+        }
+    }
+}

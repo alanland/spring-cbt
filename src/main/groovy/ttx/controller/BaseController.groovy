@@ -1,18 +1,36 @@
 package ttx.controller
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.context.WebApplicationContext
+import org.springframework.web.servlet.DispatcherServlet
+import org.springframework.web.servlet.support.RequestContextUtils
 import ttx.service.base.CreationService
+
+import javax.servlet.http.HttpServletRequest
 
 /**
  * Created by journey on 14-12-6.
  */
-abstract class BaseController {
+@Configuration
+class BaseController {
 
-    abstract CreationService getService();
+    @Autowired
+    CreationService service
 
+    // todo delete below
+
+    @RequestMapping('xxxxxx')
+    def xxxxx(HttpServletRequest request) {
+        WebApplicationContext content = RequestContextUtils.getWebApplicationContext(request);
+        content = request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+    }
+
+    @Deprecated
     @RequestMapping('listAll')
     def listAll() {
-        getService().getList()
+        service.getList()
     }
 
     /**
@@ -35,7 +53,7 @@ abstract class BaseController {
      * header field structure data
      */
     @RequestMapping('headerFieldData')
-    def headerFieldData(){
+    def headerFieldData() {
         service.getHeaderFieldData()
     }
 
@@ -43,7 +61,7 @@ abstract class BaseController {
      * line structure data
      */
     @RequestMapping('lineStructureData')
-    def lineStructureData(){
+    def lineStructureData() {
         service.getLineStructureData()
     }
 
@@ -51,7 +69,7 @@ abstract class BaseController {
      * line field data
      */
     @RequestMapping('lineFieldData')
-    def lineFieldData(){
+    def lineFieldData() {
         service.getLineFieldData()
     }
 }

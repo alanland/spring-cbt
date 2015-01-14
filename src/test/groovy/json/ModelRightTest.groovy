@@ -1,3 +1,16 @@
+package json
+
+import com.gemstone.org.json.JSONObject
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import ttx.util.json.JsonCalc
+
+/**
+ * ＠author 王成义 
+ * @created 2015-01-10.
+ */
+class ModelRightTest {
+    static def json1 = '''
 {
     "tableModel": {
         "fields": [
@@ -11,11 +24,10 @@
                 "id": "idColumnName", "type": "filteringSelect", "field": "idColumnName", "name": "ID Column",
                 "args": {"searchAttr": "field", "labelAttr": "name"}
             },
-            {"id": "autoNoExpression", "type": "string", "field": "autoNoExpression", "name": "Auto No Expression"},
-            {"id": "service", "type": "string", "field": "service", "name": "Service"}
+            {"id": "autoNoExpression", "type": "string", "field": "autoNoExpression", "name": "Auto No Expression"}
         ],
         "actions": {
-            "actionsExportId": "",
+            "actionsExportId": "xxx",
             "items": [
                 {"id": "delete", "action": "tableModel_Delete", "name": "Delete"},
                 {"id": "new", "action": "tableModel_New", "name": "New"},
@@ -35,9 +47,7 @@
                 {"id": "type", "type": "string", "field": "type", "name": "type", "disabled": "1"},
                 {"id": "autoNo", "type": "string", "field": "autoNo", "name": "autoNo"}
             ],
-            "actions": {
-                "actionsExportId": "",
-                "items": [
+            "actions": [
                 {"id": "new", "dropDown": true, "action": "newGridAddRowButton", "name": "New"},
                 {
                     "id": "deleteDetail", "action": "removeTableModelSelectRows", "name": "Delete Detail",
@@ -79,7 +89,7 @@
                         }
                     ]
                 }
-            ]},
+            ],
             "structure": [
                 {"id": "id", "field": "id", "name": "ID"},
                 {"id": "field", "field": "field", "name": "Column Name"},
@@ -440,5 +450,29 @@
             {"id": "parent", "type": "string", "field": "parent", "name": "parent"},
             {"id": "oid", "type": "string", "field": "oid", "name": "oid"}
         ]
+    }
+}
+'''
+
+    static printJson(json) {
+        if (json instanceof Map) {
+            json.each { k, v ->
+                println k
+                printJson v
+            }
+        } else if (json instanceof List) {
+            json.each { v ->
+                printJson v
+            }
+        } else {
+            println(json)
+        }
+    }
+
+    static void main(args) {
+        def json = new JsonSlurper().parseText(json1)
+        JsonCalc.getActionFilteredJson(json, [[id:'delete'],[id:'new']])
+        def a = json.tableModel.actions
+        println JsonOutput.prettyPrint(JsonOutput.toJson(json))
     }
 }

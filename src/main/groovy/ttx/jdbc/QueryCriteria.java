@@ -1,5 +1,9 @@
 package ttx.jdbc;
 
+import redis.clients.jedis.Jedis;
+
+import java.util.Set;
+
 public class QueryCriteria {
     public String field;
     public String operator;

@@ -1,26 +1,51 @@
 package ttx.service.base
 
+import com.gemstone.org.json.JSONArray
 import com.gemstone.org.json.JSONObject
 import groovy.json.JsonSlurper
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.rowset.SqlRowSet
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ttx.model.meta.FieldType
 import ttx.model.meta.MetaTable
+import ttx.util.ModelCache
 
 /**
  * Created by journey on 14-12-6.
  */
+@Configuration
 class CreationService extends BaseService {
 
-    static final TABLE_TABLE_MODEL = "ttx_table_model"
-    static final TABLE_BILL_MODEL = "ttx_bill_model"
-    static final TABLE_VIEW_MODEL = "ttx_view_model"
+    @Bean
+    CreationService creationService() {
+        new CreationService()
+    }
 
-    static Map cache = new HashMap()
-
-    CreationService() {
+    protected CreationService() {
         super()
+    }
+
+    def getNavigator(String key) {
+        getTemplate().queryForMap('select * from ttx_navigator where key=?', key).structure
+    }
+
+    def updateNavigator(String key, Map map) {
+        key = key?:""
+        JdbcTemplate template = getTemplate()
+        int count = template.queryForObject("select count(*) from ttx_navigator where key=?", Integer.class, key)
+        String sql = "update ttx_navigator set structure=? where key=?"
+        if (count == 0)
+            sql = "insert into ttx_navigator (version,structure,key) values(0,?,?)"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, (map.data as JSONArray).toString(), key)
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
+        }
+        return [code: code, desc: desc]
     }
 
     // 所有表名称
@@ -34,7 +59,7 @@ select relname as TABLE_NAME from pg_class c
 where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname
 '''
         List<String> list = template.queryForList(sql, String.class)
-        cache.tables = list
+        ModelCache.cache.tables = list
         list
     }
 
@@ -62,7 +87,7 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
         def models = list.collect { Map map ->
             new JsonSlurper().parseText(map.structure) as Map
         }
-        cache[table] = models
+        ModelCache.cache[table] = models
         models
     }
 
@@ -116,15 +141,9 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
         return [code: code, desc: desc]
     }
 
-    def buildCache(){
-        [TABLE_TABLE_MODEL,TABLE_BILL_MODEL,TABLE_VIEW_MODEL].each{
+    def buildCache() {
+        ModelCache.CACHE_KEYS.each {
             getModels(it)
-        }
-    }
-
-    def getCachedModel(String table, String key) {
-        cache[table].find {
-            it.key == key
         }
     }
 

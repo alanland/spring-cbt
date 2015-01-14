@@ -2,6 +2,8 @@ package ttx.controller
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
@@ -12,10 +14,12 @@ import ttx.service.base.CreationService
  *
  * @created 2015-01-06.
  */
+@Configuration
 @RestController
 @RequestMapping('/rest/modelSync')
 class ModelSyncController {
-    private final CreationService service = new CreationService()
+    @Autowired
+    CreationService service
     private final String filePath = "/home/journey/day/svn/cbt/src/main/resources/config/sync"
 
     @RequestMapping(value = 'databaseToFile', method = RequestMethod.POST, consumes = 'application/json')

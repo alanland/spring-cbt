@@ -1,15 +1,18 @@
 package ttx.controller
 
 import groovy.json.JsonSlurper
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.RequestContextUtils
 import ttx.jdbc.JdbcUtil
 import ttx.jdbc.rest.page.PostgresPagination
-import ttx.service.base.CreationService
-import ttx.util.SequenceGenerator
+import ttx.service.RestTableService
+import ttx.util.ModelCache
 
 import javax.servlet.http.HttpServletRequest
 
@@ -18,38 +21,22 @@ import javax.servlet.http.HttpServletRequest
  *
  * @created 2015-01-03.
  */
+@Configuration
 @RestController
 @RequestMapping('/rest/cbt')
 class RestTableController {
-    private final CreationService service = new CreationService()
+    @Autowired
+    RestTableService service
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.POST, consumes = 'application/json')
-    def create(@PathVariable("tableKey") String tableKey, @RequestBody Map map) {
-        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
-        // TODO 独立成单独的模块
-        if (tableModel.autoNoExpression && !map[tableModel.autoNoExpression]) {
-            def no = tableModel.autoNoExpression.replaceAll(/\{.*?\}/) { String m ->
-                String exp = m.substring(1, m.length() - 1)
-                if (exp.matches(/\d*/)) {
-                    String.format("%0${exp.length()}d", SequenceGenerator.next())
-                } else {
-                    new Date().format(exp)
-                }
-            }
-            tableModel.fields.each {
-                if (it.autoNo && it.autoNo=='1'){
-                    map[it.field]=no
-                }
-            }
-        }
-        map[tableModel.idColumnName] = SequenceGenerator.next()
-        JdbcUtil.getInsert().withTableName(tableModel.tableName).execute(map)
+    def create(HttpServletRequest request, @PathVariable("tableKey") String tableKey, @RequestBody Map map) {
+        service.create(RequestContextUtils.getWebApplicationContext(request), tableKey, map)
         [code: 0]
     }
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.PUT, consumes = 'application/json')
     def update(@PathVariable("tableKey") String tableKey, @RequestBody Map map) {
-        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
         JdbcTemplate template = JdbcUtil.getTemplate()
         def id = map[tableModel.idColumnName]
         int count = template.queryForObject(
@@ -68,7 +55,7 @@ class RestTableController {
 
     @RequestMapping(value = '{tableKey}/{id}', method = RequestMethod.GET)
     def get(@PathVariable("tableKey") String tableKey, @PathVariable("id") String idStr, HttpServletRequest request) {
-        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
         JdbcTemplate template = JdbcUtil.getTemplate()
         def item = tableModel.fields.find {
             it.field == tableModel.idColumnName
@@ -81,7 +68,7 @@ class RestTableController {
     @RequestMapping(value = '{tableKey}', method = RequestMethod.GET)
     def getList(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
         // 根据key名称获得表名称
-        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
         String tableName = tableModel.tableName
         String bill = request.getHeader('X-Bill') // 是否是单据的查询，可能多表
         // 返回查询字段，如果客户端有指定，返回指定的
@@ -199,7 +186,7 @@ class RestTableController {
     @RequestMapping(value = '{tableKey}', method = RequestMethod.DELETE, consumes = 'application/json')
     def deleteTable(@PathVariable('tableKey') String tableKey, @RequestBody Map map) {
         List list = map.items
-        Map tableModel = service.getCachedModel(service.TABLE_TABLE_MODEL, tableKey)
+        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
         String idColumn = tableModel.idColumnName
         def item = tableModel.fields.find {
             it.field == idColumn

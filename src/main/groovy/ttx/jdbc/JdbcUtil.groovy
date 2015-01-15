@@ -54,6 +54,7 @@ class JdbcUtil {
         dataSource
     }
 
+    // todo use spring
     static JdbcTemplate getTemplate() {
         if (!template) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());

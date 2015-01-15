@@ -64,6 +64,22 @@ class RestTableController {
         template.queryForMap("select * from ${tableModel.tableName} where ${tableModel.idColumnName}=?", id)
     }
 
+    @RequestMapping(value = 'filteringSelect/{tableKey}', method = RequestMethod.GET)
+    def filteringSelect(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
+        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        String tableName = tableModel.tableName
+        String idAttr = tableModel.idAttr ?: tableModel.idColumnName
+        String labelAttr = tableModel.labelAttr ?: tableModel.idColumnName
+        // todo size == 0 try catch
+//        def rtn = []
+//        try {
+//            rtn = service.getTemplate().queryForMap("select $idColumnName id, code from ${tableName} ")
+//        } catch (EmptyResultDataAccessException e) {
+//        } finally {
+//            return rtn;
+//        }
+        service.getTemplate().queryForList("select $idAttr as id, $labelAttr as label from ${tableName} ")
+    }
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.GET)
     def getList(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {

@@ -31,7 +31,7 @@ class CreationService extends BaseService {
         getTemplate().queryForMap('select * from ttx_navigator where key=?', key).structure
     }
 
-    def updateNavigator(String key, Map map) {
+    def updateNavigator(String key, List data) {
         key = key?:""
         JdbcTemplate template = getTemplate()
         int count = template.queryForObject("select count(*) from ttx_navigator where key=?", Integer.class, key)
@@ -40,7 +40,7 @@ class CreationService extends BaseService {
             sql = "insert into ttx_navigator (version,structure,key) values(0,?,?)"
         def code = '0', desc = 'ok'
         try {
-            template.update(sql, (map.data as JSONArray).toString(), key)
+            template.update(sql, (data as JSONArray).toString(), key)
         } catch (e) {
             code = '1'
             desc = e.toString()
@@ -94,7 +94,7 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
     def createModel(String table, Map map) {
         JdbcTemplate template = getTemplate()
         String key = map['key']
-        int count = template.queryForObject("select count(key) from ${table} where key=?", Integer.class, key)
+        int count = template.queryForObject("select count(1) from ${table} where key=?", Integer.class, key)
         if (count > 0)
             return [code: '1', desc: "key [${key}] existed"]
         String sql = "insert into ${table}(version,key,structure) values(1,?,?)"

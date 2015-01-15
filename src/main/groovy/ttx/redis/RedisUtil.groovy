@@ -22,6 +22,12 @@ class RedisUtil {
             jedis.get(key)
         }
     }
+
+    static Long getLong(String key) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            new Long(jedis.get(key))
+        }
+    }
 //        try (Jedis jedis = pool.getResource()) {
 //            /// ... do stuff here ... for example
 //            jedis.set("foo", "bar");
@@ -33,6 +39,18 @@ class RedisUtil {
     static void set(String key, String value) {
         pool.getResource().withCloseable { Jedis jedis ->
             jedis.set(key, value)
+        }
+    }
+
+    static long incr(String key) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            jedis.incr(key)
+        }
+    }
+
+    static long incrBy(String key, long integer) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            jedis.incrBy(key, integer)
         }
     }
 

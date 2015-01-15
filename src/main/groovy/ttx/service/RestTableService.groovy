@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.context.WebApplicationContext
 import ttx.jdbc.JdbcUtil
 import ttx.service.base.BaseService
-import ttx.service.base.CreationService
 import ttx.util.ModelCache
 import ttx.util.SequenceGenerator
 
@@ -23,25 +22,26 @@ class RestTableService extends BaseService {
 
     def create(WebApplicationContext ctx, String tableKey, Map map) {
         Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
-        // TODO 独立成单独的模块
-        if (tableModel.autoNoExpression && !map[tableModel.autoNoExpression]) {
-            def no = tableModel.autoNoExpression.replaceAll(/\{.*?\}/) { String m ->
-                String exp = m.substring(1, m.length() - 1)
-                if (exp.matches(/\d*/)) {
-                    String.format("%0${exp.length()}d", SequenceGenerator.next())
+        // TODO 独立成单独的模块 U{yyy-MM-dd}{000000}
+        tableModel.fields.each {
+            if (it.autoNo) {
+                String p = it.autoNo
+                if (p == 0) {
+                    map[it.field] = SequenceGenerator.next(tableModel.tableName)
                 } else {
-                    new Date().format(exp)
-                }
-            }
-            tableModel.fields.each {
-                if (it.autoNo && it.autoNo == '1') {
-                    map[it.field] = no
+                    map[it.field] = p.replaceAll(/\{.*?\}/) { String m ->
+                        String exp = m.substring(1, m.length() - 1)
+                        if (exp.matches(/\d*/)) {
+                            String.format("%0${exp.length()}d", SequenceGenerator.next(tableModel.tableName))
+                        } else {
+                            new Date().format(exp)
+                        }
+                    }
                 }
             }
         }
-        map[tableModel.idColumnName] = SequenceGenerator.next()
-        if (tableModel.service){
-            ctx.getBean(tableModel.service+'Service').beforeSave(map)
+        if (tableModel.service) {
+            ctx.getBean(tableModel.service + 'Service').beforeSave(map)
         }
         JdbcUtil.getInsert().withTableName(tableModel.tableName).execute(map)
     }

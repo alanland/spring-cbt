@@ -1,4 +1,4 @@
-package ttx.interceptor
+package ttx.web.interceptor
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import ttx.service.AuthService

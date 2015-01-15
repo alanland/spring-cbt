@@ -38,10 +38,16 @@ class CreationController {
         service.getNavigator(key)
     }
 
-    // 更新表模型
+    // 更新表模型 todo 权限
     @RequestMapping(value = 'navigator', method = RequestMethod.PUT, consumes = 'application/json')
     def updateNavigator(@RequestBody Map map) {
-        service.updateNavigator(map.key, map)
+        service.updateNavigator('admin', map.data)
+    }
+
+    // 更新表模型 todo 权限
+    @RequestMapping(value = 'navigator/{key}', method = RequestMethod.PUT, consumes = 'application/json')
+    def updateNavigator(@PathVariable String key, @RequestBody Map map) {
+        service.updateNavigator(key, map.data)
     }
 
     // 获取数据库所有表

@@ -1,4 +1,4 @@
-package ttx.interceptor
+package ttx.web.interceptor
 
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView

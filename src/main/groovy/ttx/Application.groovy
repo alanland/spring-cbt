@@ -3,17 +3,16 @@ package ttx
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
-import ttx.service.base.CreationService
-import ttx.util.SequenceGenerator
+import ttx.web.listener.StartupCacheInitializer
 
 @ComponentScan
 @EnableAutoConfiguration
 class Application {
-    static void main(args) {
+    static void main(String[] args) {
 //        JdbcUtil.initData()
 //        UserDatas.create()
-        SequenceGenerator.syncFromDb()
-        new CreationService().buildCache()
-        SpringApplication.run(Application.class, args)
+        SpringApplication.run(Application.class, args).
+                addApplicationListener(new StartupCacheInitializer())
+
     }
 }

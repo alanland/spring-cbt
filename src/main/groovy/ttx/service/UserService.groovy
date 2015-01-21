@@ -10,10 +10,10 @@ import ttx.util.Coder
  * @created 2015-01-12.
  */
 @Configuration
-class UserProfileService extends BaseService {
+class UserService extends BaseService {
     @Bean
-    UserProfileService userService() {
-        new UserProfileService()
+    UserService userService() {
+        new UserService()
     }
 
     void beforeSave(user) {

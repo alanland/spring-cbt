@@ -10,6 +10,7 @@ import ttx.redis.serializer.LongRedisSerializer
  * ＠author 王成义 
  * @created 2015-01-11.
  */
+@Deprecated // todo ?
 class LongRedisTemplate extends RedisTemplate<String,Long>{
     LongRedisTemplate(){
         RedisSerializer<String> stringSerializer = new StringRedisSerializer();

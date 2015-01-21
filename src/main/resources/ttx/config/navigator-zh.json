@@ -1,0 +1,23 @@
+[
+    {"id": "root", "name": "TTX", "tid": "root", "checked": false},
+    {"id": "user", "name": "User", "tid": "user", "parent": "basis_general", "checked": false, "type": "bill"},
+    {"id": "user2", "name": "User3", "type": "bill", "tid": "user", "parent": "root", "oid": "", "checked": false},
+    {
+        "id": "creation", "name": "Creation", "type": "amd", "tid": "ttx/dijit/wso/Creation",
+        "parent": "root", "oid": "", "checked": false
+    },
+    {"id": "basis", "name": "Basis Data", "tid": "continent", "parent": "root", "checked": false},
+    {"id": "basis_general", "name": "General", "tid": "country", "parent": "basis", "checked": false},
+    {"id": "owner", "name": "Owner", "tid": "owner", "parent": "basis_general", "checked": false, "type": "bill"},
+    {"id": "sync", "name": "Sync", "type": "bill", "tid": "sync", "parent": "root", "oid": "", "checked": false},
+    {"id": "test", "name": "XXX", "type": "bill", "tid": "test", "parent": "root", "oid": "", "checked": false},
+    {
+        "id": "user_profile", "name": "user_profile", "type": "bill", "tid": "user_profile", "parent": "root",
+        "oid": "", "checked": false
+    },
+    {"id": "role", "name": "Role", "type": "bill", "tid": "role", "parent": "root", "oid": "", "checked": false},
+    {
+        "id": "permission", "name": "Permission", "type": "amd", "tid": "ttx/dijit/wso/Permission", "parent": "root",
+        "oid": "", "checked": false
+    }
+]

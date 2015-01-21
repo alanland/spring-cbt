@@ -8,6 +8,7 @@ import ttx.model.meta.MetaTable
 /**
  * Created by journey on 14-12-11.
  */
+@Deprecated // todo ?
 class TableRegister {
     private static Map<String, MetaTable> tableMapping = [:]
 

@@ -1,14 +1,14 @@
 // 登录信息 hash
-login:{user} token[string], lastActive[long]
+login:{database}:{user} token[string], lastActive[long]
 
 
 // 主键自增
-autoNo:{key} value[long]
+autoNo:{database}:{key} value[long]
 
 
-// ? 权限信息
-model.nav:{role}        value[string]
-model.view:{role}:key   value[string]
+// 权限信息
+right:{database}:nav:{role}        value[string]
+right:{database}:view:{role}:key   value[string]
 
 json字符串
 

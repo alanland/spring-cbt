@@ -110,3 +110,14 @@
         ]
     }
 }
+
+
+Could not bind properties;
+nested exception is org.springframework.beans.InvalidPropertyException
+: Invalid property 'datasources[dft]'
+of bean class [ttx.util.config.Datasources$$EnhancerBySpringCGLIB$$b40eb094]:
+Illegal attempt to get property 'datasources' threw exception
+; nested exception is org.springframework.beans.InvalidPropertyException: Invalid property
+'datasources[dft]' of bean class [ttx.util.config.Datasources$$EnhancerBySpringCGLIB$$b40eb094]:
+Property referenced in indexed property path 'datasources[dft]'
+is neither an array nor a List nor a Set nor a Map; returned value was [java.lang.Object@315b4202]

@@ -15,10 +15,10 @@ class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor()).addPathPatterns(
-                '/rest/domain/**',
-                '/rest/creation/navigator'
-        )
+//        registry.addInterceptor(new AuthInterceptor()).addPathPatterns(
+//                '/rest/domain/**',
+//                '/rest/creation/navigator'
+//        )
 //                .excludePathPatterns(
 //                '/error',
 //                '/rest/redirect/**',

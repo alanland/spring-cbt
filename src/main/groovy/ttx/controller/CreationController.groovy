@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import ttx.service.RegistryCenter
 import ttx.service.base.CreationService
 import ttx.util.ModelCache
 
@@ -16,33 +15,27 @@ import ttx.util.ModelCache
 @Configuration
 @RestController
 @RequestMapping('/rest/creation')
-class CreationController {
+class CreationController extends BaseController {
     @Autowired
     CreationService service
 
-    @RequestMapping('billMapping')
-    @Deprecated
-    def billMapping() {
-        RegistryCenter.getMapping()
-    }
-
-    // 获取数据库所有表
-    // TODO to delete
-    @RequestMapping(value = 'navigator', method = RequestMethod.GET)
-    def navigator() {
-        service.getNavigator('admin')
-    }
-
-    @RequestMapping(value = 'navigator/{key}', method = RequestMethod.GET)
-    def navigatorGet(@PathVariable String key) {
-        service.getNavigator(key)
-    }
-
-    // 更新表模型 todo 权限
-    @RequestMapping(value = 'navigator', method = RequestMethod.PUT, consumes = 'application/json')
-    def updateNavigator(@RequestBody Map map) {
-        service.updateNavigator('admin', map.data)
-    }
+//    // 获取数据库所有表
+//    // TODO to delete
+//    @RequestMapping(value = 'navigator', method = RequestMethod.GET)
+//    def navigator() {
+//        service.getSysNavigator()
+//    }
+//
+//    @RequestMapping(value = 'navigator/{key}', method = RequestMethod.GET)
+//    def navigatorGet(@PathVariable String key) {
+//        service.getNavigator(key)
+//    }
+//
+//    // 更新表模型 todo 权限
+//    @RequestMapping(value = 'navigator', method = RequestMethod.PUT, consumes = 'application/json')
+//    def updateNavigator(@RequestBody Map map) {
+//        service.updateNavigator('admin', map.data)
+//    }
 
     // 更新表模型 todo 权限
     @RequestMapping(value = 'navigator/{key}', method = RequestMethod.PUT, consumes = 'application/json')

@@ -9,8 +9,6 @@ import org.codehaus.jackson.annotate.JsonIgnore
  */
 class MetaTable {
 
-    static final VERSION = '1.0'
-
     String key
     String tableName
     String prefix = ''

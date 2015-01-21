@@ -1,0 +1,16 @@
+datasources:
+    dft:
+        url: jdbc:postgresql://localhost/cbtxxxxxx
+        username: postgres
+        password: wang
+        driver-class-name: org.postgresql.Driver
+    mysql:
+        url: jdbc:mysql://localhost/test
+        username: dbuser
+        password: dbpass
+        driver-class-name: com.mysql.jdbc.Driver
+    mysql2:
+        url: jdbc:mysql://localhost/test
+        username: dbuser
+        password: dbpass
+        driver-class-name: com.mysql.jdbc.Driver

@@ -3,11 +3,12 @@ package ttx.jdbc.rest
 import org.springframework.jdbc.core.JdbcTemplate
 import ttx.jdbc.QueryCriteria
 import ttx.model.BaseModel
-import ttx.service.RegistryCenter
 
 /**
  * Created by journey on 14-12-9.
  */
+// todo 确定该类是否还有用途
+@Deprecated
 class JsonRest {
     JdbcTemplate template
 
@@ -81,7 +82,7 @@ where 1==1
     // TODO 删除明细
 
     // TODO 头明细保存分开
-    def put(Map<String,Object> obj,Long id){
+    def put(Map<String, Object> obj, Long id) {
         BaseModel header = RegistryCenter.getMappingItem(target).get('header', null)
         String sql = "update ${header.headerTableName}"
         List holders = new ArrayList()

@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.rowset.SqlRowSet
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ttx.model.meta.FieldType
-import ttx.model.meta.MetaTable
 import ttx.util.ModelCache
 
 /**
@@ -27,13 +26,17 @@ class CreationService extends BaseService {
         super()
     }
 
-    def getNavigator(String key) {
-        getTemplate().queryForMap('select * from ttx_navigator where key=?', key).structure
+    def getSysNavigator(String db) {
+        getNavigator(db, 'admin')
     }
 
-    def updateNavigator(String key, List data) {
-        key = key?:""
-        JdbcTemplate template = getTemplate()
+    def getNavigator(String db, String key) {
+        template(db).queryForMap('select * from ttx_navigator where key=?', key).structure
+    }
+
+    def updateNavigator(String db, String key, List data) {
+        key = key ?: ""
+        JdbcTemplate template = template(db)
         int count = template.queryForObject("select count(*) from ttx_navigator where key=?", Integer.class, key)
         String sql = "update ttx_navigator set structure=? where key=?"
         if (count == 0)
@@ -49,7 +52,7 @@ class CreationService extends BaseService {
     }
 
     // 所有表名称
-    def getTables() {
+    def getTables(String db) {
         def sql = '''
 select relname as TABLE_NAME ,col_description(c.oid, 0) as COMMENTS from pg_class c
 where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname
@@ -58,14 +61,14 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
 select relname as TABLE_NAME from pg_class c
 where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname
 '''
-        List<String> list = template.queryForList(sql, String.class)
+        List<String> list = template(db).queryForList(sql, String.class)
         ModelCache.cache.tables = list
         list
     }
 
     // 表字段
-    def getFields(String table) {
-        SqlRowSet rowSet = template.queryForRowSet("select * from $table where 1=2 ")
+    def getFields(String db, String table) {
+        SqlRowSet rowSet = template(db).queryForRowSet("select * from $table where 1=2 ")
         SqlRowSetMetaData meta = rowSet.getMetaData()
         (1..meta.columnCount).collect { index ->
             String columnName = meta.getColumnName(index)
@@ -78,12 +81,12 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
         }
     }
 
-    def getModel(String table, String key) {
-        getTemplate().queryForMap("select * from ${table} where key=?", key).structure
+    def getModel(String db, String table, String key) {
+        template(db).queryForMap("select * from ${table} where key=?", key).structure
     }
 
-    def getModels(String table) {
-        def list = getTemplate().queryForList("select * from $table")
+    def getModels(String db, String table) {
+        def list = template(db).queryForList("select * from $table")
         def models = list.collect { Map map ->
             new JsonSlurper().parseText(map.structure) as Map
         }
@@ -91,8 +94,8 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
         models
     }
 
-    def createModel(String table, Map map) {
-        JdbcTemplate template = getTemplate()
+    def createModel(String db, String table, Map map) {
+        JdbcTemplate template = template(db)
         String key = map['key']
         int count = template.queryForObject("select count(1) from ${table} where key=?", Integer.class, key)
         if (count > 0)
@@ -105,12 +108,12 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
             code = '1'
             desc = e.toString()
         }
-        getModels(table)//    update cache    #todo to change
+        getModels(db, table)//    update cache    #todo to change
         [code: code, desc: desc]
     }
 
-    def updateModel(String table, Map map) {
-        JdbcTemplate template = getTemplate()
+    def updateModel(String db, String table, Map map) {
+        JdbcTemplate template = template(db)
         String key = map['key']
         int count = template.queryForObject("select count(key) from ${table} where key=?", Integer.class, key)
         if (count == 0)
@@ -125,34 +128,26 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
             code = '1'
             desc = e.toString()
         }
-        getModels(table)//    update cache    #todo to change
+        getModels(db, table)//    update cache    #todo to change
         return [code: code, desc: desc]
     }
 
-    def deleteModel(String table, String key) {
+    def deleteModel(String db, String table, String key) {
         def code = '0', desc = 'ok'
         try {
-            getTemplate().update("delete from ${table} where key=?", key)
+            template(db).update("delete from ${table} where key=?", key)
         } catch (e) {
             code = '1'
             desc = e.toString()
         }
-        getModels(table)//    update cache    #todo to change
+        getModels(db, table)//    update cache    #todo to change
         return [code: code, desc: desc]
     }
 
-    def buildCache() {
+    def buildCache(String db) {
         ModelCache.CACHE_KEYS.each {
-            getModels(it)
+            getModels(db, it)
         }
-    }
-
-    // 新增一条记录到表 table_model
-    // TODO vesion
-    @Deprecated
-    def saveModel(String key, Map map) {
-        String sql = "insert into ttx_table_model(version,key,structure) values(?,?,?)"
-        getTemplate().update(sql, MetaTable.VERSION, key, (map as JSONObject).toString())
     }
 
 /**

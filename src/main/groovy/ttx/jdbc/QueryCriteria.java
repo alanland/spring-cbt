@@ -1,9 +1,6 @@
 package ttx.jdbc;
 
-import redis.clients.jedis.Jedis;
-
-import java.util.Set;
-
+@Deprecated // todo ?
 public class QueryCriteria {
     public String field;
     public String operator;

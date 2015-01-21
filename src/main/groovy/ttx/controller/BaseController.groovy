@@ -2,7 +2,9 @@ package ttx.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.support.RequestContextUtils
@@ -17,59 +19,16 @@ import javax.servlet.http.HttpServletRequest
 class BaseController {
 
     @Autowired
-    CreationService service
+    CreationService creationService
 
     // todo delete below
-
-    @RequestMapping('xxxxxx')
-    def xxxxx(HttpServletRequest request) {
+    @RequestMapping(value = 'xxxxx', method = RequestMethod.POST, consumes = 'application/json')
+    def xxxxx(HttpServletRequest request, @RequestBody Map map) {
         WebApplicationContext content = RequestContextUtils.getWebApplicationContext(request);
         content = request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
     }
 
-    @Deprecated
-    @RequestMapping('listAll')
-    def listAll() {
-        service.getList()
-    }
-
-    /**
-     * get query field list data
-     */
-    @RequestMapping('queryFieldData')
-    def queryFieldData() {
-        service.getQueryFieldStructureData()
-    }
-
-    /**
-     * list structure data
-     */
-    @RequestMapping('listStructureData')
-    def listStructureData() {
-        service.getListStructureData()
-    }
-
-    /**
-     * header field structure data
-     */
-    @RequestMapping('headerFieldData')
-    def headerFieldData() {
-        service.getHeaderFieldData()
-    }
-
-    /**
-     * line structure data
-     */
-    @RequestMapping('lineStructureData')
-    def lineStructureData() {
-        service.getLineStructureData()
-    }
-
-    /**
-     * line field data
-     */
-    @RequestMapping('lineFieldData')
-    def lineFieldData() {
-        service.getLineFieldData()
+    String getDb(HttpServletRequest request) {
+        request.getHeader('X-DB')
     }
 }

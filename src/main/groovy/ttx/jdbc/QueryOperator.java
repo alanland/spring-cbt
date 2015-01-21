@@ -1,5 +1,6 @@
 package ttx.jdbc;
 
+@Deprecated // todo ?
 public class QueryOperator 
 {
 	public static String Equal = "=";

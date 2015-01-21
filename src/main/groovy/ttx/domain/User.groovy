@@ -5,8 +5,6 @@ package ttx.domain
  * @created 2015-01-11.
  */
 class User {
-    Long id
-    String username
+    String code
     String password //TODO to char[]
-    List<Role> roleList
 }

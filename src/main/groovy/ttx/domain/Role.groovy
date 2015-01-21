@@ -5,7 +5,6 @@ package ttx.domain
  * @created 2015-01-11.
  */
 class Role {
-    Long id
     String code
-    List<User> userList
+    String name
 }

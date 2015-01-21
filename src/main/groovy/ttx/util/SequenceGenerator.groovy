@@ -1,24 +1,33 @@
 package ttx.util
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import ttx.jdbc.JdbcUtil
 import ttx.redis.RedisUtil
-
-import java.util.concurrent.atomic.AtomicLong
 
 /**
  * ＠author 王成义 
  * @created 2015-01-03.
  */
+@Configuration
 class SequenceGenerator {
+
+    @Autowired
+    JdbcUtil jdbc
+
     private static final TABLE = 'ttx_sequence'
 
-    private SequenceGenerator() {}
+    SequenceGenerator() {}
 
-    static final AtomicLong sequence = new AtomicLong()
+    @Bean
+    SequenceGenerator sequenceGenerator() {
+        new SequenceGenerator()
+    }
 
-    static long next(String key = '') {
+    long next(String db, String key = '') {
         long s = RedisUtil.getLong(key)
-        def template = JdbcUtil.getTemplate()
+        def template = jdbc.template(db)
         int count = template.queryForObject("select count(1) from ${TABLE}", Integer.class)
         if (count == 0) {
             template.update("insert into ${TABLE}(key,sequence) values(?,?) ", key, s)
@@ -28,10 +37,10 @@ class SequenceGenerator {
         s
     }
 
-    static def next(String key = '', long delta) {
+    def next(String db, String key = '', long delta) {
         long current = RedisUtil.getLong(key)
         long s = RedisUtil.incrBy(key, delta)
-        def template = JdbcUtil.getTemplate()
+        def template = jdbc.template(db)
         int count = template.queryForObject("select count(1) from ${TABLE} where key=?", Integer.class, key)
         if (count == 0) {
             template.update("insert into ${TABLE}(key,sequence) values(?,?) ", key, s)
@@ -41,9 +50,15 @@ class SequenceGenerator {
         (current + 1)..s
     }
 
-    static def syncFromDb() {
+    void syncFromAllDb() {
+        jdbc.templates.keySet().each { String db ->
+            syncFromDb(db)
+        }
+    }
+
+    void syncFromDb(String db) {
         try {
-            List l = JdbcUtil.getTemplate().queryForList("select key,sequence from ${TABLE}")
+            List l = jdbc.template(db).queryForList("select key,sequence from ${TABLE}")
             l.each { item ->
                 RedisUtil.set(item.key as String, item.sequence as String)
             }

@@ -12,19 +12,22 @@ import ttx.util.json.ResourceLoader
 @Configuration
 @RestController
 @RequestMapping('/rest/jf')
+@Deprecated
+// todo 此类不应该被调用
 class JsonFileController {
-    @RequestMapping('navigator')
-    def navigator() {
-        ResourceLoader.getJsonStringByFile('navigator')
-    }
 
-    @RequestMapping('menu')
-    def menu() {
-        ResourceLoader.getJsonStringByFile('menu')
-    }
-
-    @RequestMapping('billDefinition/{tid}')
-    def billDefinition(@PathVariable String tid) {
-        ResourceLoader.getJsonStringByFile("view/$tid")
-    }
+//    @RequestMapping('navigator')
+//    def navigator() {
+//        ResourceLoader.getJsonStringByFile('navigator')
+//    }
+//
+//    @RequestMapping('menu')
+//    def menu() {
+//        ResourceLoader.getJsonStringByFile('menu')
+//    }
+//
+//    @RequestMapping('billDefinition/{tid}')
+//    def billDefinition(@PathVariable String tid) {
+//        ResourceLoader.getJsonStringByFile("view/$tid")
+//    }
 }

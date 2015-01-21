@@ -2,14 +2,11 @@ package ttx.controller
 
 import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.RequestContextUtils
-import ttx.jdbc.JdbcUtil
 import ttx.jdbc.rest.page.PostgresPagination
 import ttx.service.RestTableService
 import ttx.util.ModelCache
@@ -21,64 +18,32 @@ import javax.servlet.http.HttpServletRequest
  *
  * @created 2015-01-03.
  */
-@Configuration
+//@Configuration // todo does not need
 @RestController
 @RequestMapping('/rest/cbt')
-class RestTableController {
+class RestTableController extends BaseController {
     @Autowired
     RestTableService service
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.POST, consumes = 'application/json')
     def create(HttpServletRequest request, @PathVariable("tableKey") String tableKey, @RequestBody Map map) {
-        service.create(RequestContextUtils.getWebApplicationContext(request), tableKey, map)
+        service.create(getDb(request), tableKey, map)
         [code: 0]
     }
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.PUT, consumes = 'application/json')
-    def update(@PathVariable("tableKey") String tableKey, @RequestBody Map map) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
-        JdbcTemplate template = JdbcUtil.getTemplate()
-        def id = map[tableModel.idColumnName]
-        int count = template.queryForObject(
-                "select count(1) from ${tableModel.tableName} where ${tableModel.idColumnName}=?",
-                Integer.class, id
-        )
-        if (count != 1) {
-            return [code: 1, desc: "$count items exist in ${tableModel.tableName}"]
-        }
-        def where = []
-        where[tableModel.idColumnName] = map.get(tableModel.idColumnName)
-        map.remove(tableModel.idColumnName)
-        JdbcUtil.getUpdate().withTableName(tableModel.tableName).execute(map, where)
-        [code: 0]
+    def update(HttpServletRequest request, @PathVariable("tableKey") String tableKey, @RequestBody Map map) {
+        service.saveOrUpdate(getDb(request), tableKey, map)
     }
 
     @RequestMapping(value = '{tableKey}/{id}', method = RequestMethod.GET)
     def get(@PathVariable("tableKey") String tableKey, @PathVariable("id") String idStr, HttpServletRequest request) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
-        JdbcTemplate template = JdbcUtil.getTemplate()
-        def item = tableModel.fields.find {
-            it.field == tableModel.idColumnName
-        }
-        def id = item.type == 'integer' ? Long.valueOf(idStr) : idStr
-        template.queryForMap("select * from ${tableModel.tableName} where ${tableModel.idColumnName}=?", id)
+        service.get(getDb(request), tableKey, idStr)
     }
 
     @RequestMapping(value = 'filteringSelect/{tableKey}', method = RequestMethod.GET)
     def filteringSelect(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
-        String tableName = tableModel.tableName
-        String idAttr = tableModel.idAttr ?: tableModel.idColumnName
-        String labelAttr = tableModel.labelAttr ?: tableModel.idColumnName
-        // todo size == 0 try catch
-//        def rtn = []
-//        try {
-//            rtn = service.getTemplate().queryForMap("select $idColumnName id, code from ${tableName} ")
-//        } catch (EmptyResultDataAccessException e) {
-//        } finally {
-//            return rtn;
-//        }
-        service.getTemplate().queryForList("select $idAttr as id, $labelAttr as label from ${tableName} ")
+        service.filterSelect(getDb(request), tableKey)
     }
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.GET)
@@ -175,10 +140,10 @@ class RestTableController {
             }
         }
         // 分页数据
-        JdbcTemplate template = JdbcUtil.getTemplate()
+        JdbcTemplate template = service.template(getDb(request))
 //        def res = template.queryForMap(sql.replace('{content}', content), values.toArray())
-        def count = template.queryForObject(sql.toString().replace('{content}', 'count(1)'), Integer.class, values.toArray())
         def page = new PostgresPagination(sql.toString().replace('{content}', content), template, begin, end, values.toArray())
+        def count = template.queryForObject(sql.toString().replace('{content}', 'count(1)'), Integer.class, values.toArray())
 //        def res = template.query(  // todo 参考代码
 //                sql.toString(),
 //                new RowMapper() {
@@ -200,20 +165,7 @@ class RestTableController {
     }
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.DELETE, consumes = 'application/json')
-    def deleteTable(@PathVariable('tableKey') String tableKey, @RequestBody Map map) {
-        List list = map.items
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
-        String idColumn = tableModel.idColumnName
-        def item = tableModel.fields.find {
-            it.field == idColumn
-        }
-        if (item.type == 'string')
-            list = list.collect {
-                "'$it'"
-            }
-        String sql = "delete from ${tableModel.tableName} where ${idColumn} in(${list.join(',')})"
-        JdbcUtil.getTemplate().update(sql)
-        [code: 0]
+    def deleteTable(HttpServletRequest request, @PathVariable('tableKey') String tableKey, @RequestBody Map map) {
+        service.deleteTable(getDb(request), tableKey, map)
     }
-
 }

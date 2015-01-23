@@ -5,6 +5,7 @@ import com.gemstone.org.json.JSONObject
 import groovy.json.JsonSlurper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.rowset.SqlRowSet
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
@@ -150,9 +151,13 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
 
     def getViewData(String db, String tid, String oid) {
         String table = AppProfile.TABLE_WSO_DATA
-        def map = template(db).queryForMap("select * from $table where tid=? and oid=?", tid, oid)
-        RedisUtil.set("$db:$table:${map.tid}:${map.oid}", map.structure)
-        new JsonSlurper().parseText(map.structure)
+        try {
+            def map = template(db).queryForMap("select * from $table where tid=? and oid=?", tid, oid)
+            RedisUtil.set("$db:$table:${map.tid}:${map.oid}", map.structure)
+            return new JsonSlurper().parseText(map.structure)
+        } catch (EmptyResultDataAccessException e) {
+            return []
+        }
     }
 
     def getViewDatas(String db) {

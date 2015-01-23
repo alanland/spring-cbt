@@ -1,0 +1,11 @@
+{
+    "tableName": "ttx_user_role",
+    "key": "user_role",
+    "idColumnName": "id",
+    "fields": [
+        {"id": "id", "field": "id", "name": "id", "type": "integer", "autoNo": "0"},
+        {"id": "version", "field": "version", "name": "version", "type": "integer"},
+        {"id": "user_code", "field": "user_code", "name": "user_code", "type": "string"},
+        {"id": "role_code", "field": "role_code", "name": "role_code", "type": "string"}
+    ]
+}

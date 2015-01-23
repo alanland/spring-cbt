@@ -20,8 +20,19 @@ class ResourceLoader {
         new ResourceLoader()
     }
 
+    def getJsonFromResource(String file) {
+        new JsonSlurper().parse(ctx.getResource("classpath:${file}.json").getFile())
+    }
+
     String getJsonStringFromResource(String file) {
-//        def text = .getText('utf-8')
         JsonOutput.toJson(new JsonSlurper().parse(ctx.getResource("classpath:${file}.json").getFile()))
+    }
+
+    def getJsonFromFile(File file) {
+        new JsonSlurper().parse(file)
+    }
+
+    String getJsonStringFromFile(File file) {
+        JsonOutput.toJson(getJsonFromFile(file))
     }
 }

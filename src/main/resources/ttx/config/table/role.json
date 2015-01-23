@@ -1,0 +1,12 @@
+{
+    "fields": [
+        {"id": "version", "field": "version", "name": "version", "type": "integer"},
+        {"id": "code", "field": "code", "name": "code", "type": "string"},
+        {"id": "name", "field": "name", "name": "name", "type": "string"}
+    ],
+    "idAttr": "code",
+    "idColumnName": "code",
+    "key": "role",
+    "labelAttr": "code",
+    "tableName": "ttx_role"
+}

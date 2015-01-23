@@ -1,0 +1,12 @@
+{
+    "tableName": "ttx_user",
+    "key": "user",
+    "idColumnName": "code",
+    "labelAttr": "code",
+    "idAttr": "code",
+    "fields": [
+        {"field": "version", "id": "version", "name": "version", "type": "integer"},
+        {"field": "code", "id": "code", "name": "code", "type": "string"},
+        {"field": "password", "id": "password", "name": "password", "type": "string"}
+    ], "idAttr": "code", "labelAttr": "code", "service": "user"
+}

@@ -1,0 +1,7 @@
+{
+    "key": "user",
+    "header": "user",
+    "detail": "user_role",
+    "principal": "code",
+    "subordinate": "user_code"
+}

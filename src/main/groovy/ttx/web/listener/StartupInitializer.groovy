@@ -55,25 +55,46 @@ class StartupInitializer implements ApplicationListener<ContextRefreshedEvent> {
                 key      : 'admin',
                 structure: jsonString('ttx/config/navigator')
         ])
-        jdbc.insert(db).withTableName('ttx_wso_data').execute([
-                version  : 0,
-                tid      : 'ttx.dijit.wso.Creation',
-                oid      : '*',
-                structure: jsonString('ttx/config/view/Creation')
-        ])
-        jdbc.insert(db).withTableName('ttx_wso_data').execute([
-                version  : 0,
-                tid      : 'ttx.dijit.wso.Bill',
-                oid      : 'BillTemplate',
-                structure: jsonString('ttx/config/view/BillTemplate')
-        ])
+        ctx.getResource("classpath:ttx/config/table").getFile().listFiles().each { file ->
+            def jsonObject = json(file)
+            jdbc.insert(db).withTableName('ttx_table_model').execute([
+                    version  : 0,
+                    key      : jsonObject.key,
+                    structure: jsonString(file)
+            ])
+        }
+        ctx.getResource("classpath:ttx/config/bill").getFile().listFiles().each { file ->
+            def jsonObject = json(file)
+            jdbc.insert(db).withTableName('ttx_bill_model').execute([
+                    version  : 0,
+                    key      : jsonObject.key,
+                    structure: jsonString(file)
+            ])
+        }
+        ctx.getResource("classpath:ttx/config/view").getFile().listFiles().each { file ->
+            def jsonObject = json(file)
+            jdbc.insert(db).withTableName('ttx_wso_data').execute([
+                    version  : 0,
+                    tid      : jsonObject.tid,
+                    oid      : jsonObject.oid,
+                    structure: jsonString(file)
+            ])
+        }
         jdbc.insert(db).withTableName('ttx_system').execute([
                 key  : 'data_updated',
                 value: '1'
         ])
     }
 
+    String jsonString(File file) {
+        resourceLoader.getJsonStringFromFile(file)
+    }
+
     String jsonString(String file) {
         resourceLoader.getJsonStringFromResource(file)
+    }
+
+    def json(File file) {
+        resourceLoader.getJsonFromFile(file)
     }
 }

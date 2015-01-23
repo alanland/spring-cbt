@@ -1,0 +1,61 @@
+{
+    "tid": "ttx.dijit.wso.Bill",
+    "oid": "user",
+    "key": "user",
+    "billKey": "user",
+    "list": {
+        "columns": "2",
+        "actions": {"actionsExportId": "list", "items": [{"action": ":query", "id": "query", "name": "查询"}]},
+        "fields": [],
+        "grid": {
+            "name": "List", "actions": {
+                "actionsExportId": "bills", "items": [
+                    {"action": ":new", "id": "new", "name": "New"},
+                    {"action": ":delete", "id": "delete", "name": "Delete"}
+                ]
+            }, "structure": [
+                {"field": "version", "id": "version", "name": "version", "type": "integer"},
+                {"field": "code", "id": "code", "name": "code", "type": "string"},
+                {"field": "password", "id": "password", "name": "password", "type": "string"}
+            ]
+        }
+    },
+    "bill": {
+        "columns": 2,
+        "actions": {"actionsExportId": "bill", "items": [{"action": ":create", "id": "save", "name": "Save"}]},
+        "fields": [
+            {"field": "version", "id": "version", "name": "version", "type": "integer"},
+            {"field": "code", "id": "code", "name": "code", "type": "string"},
+            {"field": "password", "id": "password", "name": "password", "type": "string"}
+        ],
+        "grid": {
+            "name": "Details",
+            "actions": {
+                "actionsExportId": "details",
+                "items": [
+                    {"action": ":newDetail", "id": "new", "name": "New Detail"},
+                    {"action": ":deleteDetail", "id": "delete", "name": "Delete Detail"}
+                ]
+            },
+            "structure": [
+                {"autoNo": "0", "field": "id", "id": "id", "name": "id", "type": "integer"},
+                {"field": "version", "id": "version", "name": "version", "type": "integer"},
+                {"field": "user_code", "id": "user_code", "name": "user_code", "type": "string"},
+                {"field": "role_code", "id": "role_code", "name": "role_code", "type": "string"}
+            ]
+        }
+    },
+    "detail": {
+        "columns": 2,
+        "actions": {
+            "actionsExportId": "detail",
+            "items": [{"action": ":createDetail", "id": "save", "name": "Save"}]
+        },
+        "fields": [
+            {"autoNo": "0", "field": "id", "id": "id", "name": "id", "type": "integer"},
+            {"field": "version", "id": "version", "name": "version", "type": "integer"},
+            {"field": "user_code", "id": "user_code", "name": "user_code", "type": "string"},
+            {"field": "role_code", "id": "role_code", "name": "role_code", "type": "string"}
+        ]
+    }
+}

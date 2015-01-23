@@ -5,23 +5,47 @@ package ttx.util.json
  * @created 2015-01-10.
  */
 class JsonCalc {
-    // 过滤掉一部分
+    // 从viewData中过滤掉一部分，返回viewData
     static def getActionFilteredJson(Map json, List... actions) {
         List ats = []
         actions.each {
             it.retainAll()
         }
         if (actions.size() == 0) return json
+
+    }
+
+    // 从 viewData 中获取 actions
+    static def getActions(Map json) {
+        List result = [[id: 'root', name: 'root']]
+        getActionsFromViewData(json, result)
+        result
+    }
+
+    // 从 viewData 中获取 actions 的递归算法
+    private static def getActionsFromViewData(Map json, List result) {
         json.each { k, v ->
             if (v instanceof Map) {
                 if (v.actionsExportId) {
-                    v.items = getFilteredActions(v.items,)
+                    result.add([
+                            id    : v.actionsExportId,
+                            name  : v.actionsExportId,
+                            parent: 'root'
+                    ])
+                    v.items.each { item ->
+                        result.add([
+                                id    : "${v.actionsExportId}:${item.id}".toString(),
+                                action: item.action,
+                                name  : item.name,
+                                parent: v.actionsExportId
+                        ])
+                    }
                 } else {
-                    getActionFilteredJson(v, actions)
+                    getActionsFromViewData(v, result)
                 }
             }
         }
-        json
+        result
     }
 
     private static def getFilteredActions(List actions, List l) {

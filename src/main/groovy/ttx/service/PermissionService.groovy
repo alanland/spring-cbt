@@ -1,12 +1,15 @@
 package ttx.service
 
 import com.gemstone.org.json.JSONArray
+import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.dao.EmptyResultDataAccessException
 import ttx.service.base.BaseService
 import ttx.service.base.CreationService
 import ttx.util.config.AppProfile
+import ttx.util.json.JsonCalc
 
 /**
  * ＠author 王成义 
@@ -53,7 +56,7 @@ class PermissionService extends BaseService {
                 String.class,
                 user
         )
-        if(user=='admin' || roles.contains('admin')){
+        if (user == 'admin' || roles.contains('admin')) {
             return defaultNav
         }
         List res = []
@@ -89,18 +92,30 @@ class PermissionService extends BaseService {
         creationService.updateNavigator(db, role, data)
     }
 
+    // 返回 list json
     private def getDefaultActions(String db, String tid, String oid) { // todo cache
-        template(db).queryForMap(
-                "select structure from ${AppProfile.TABLE_WSO_DATA} where tid=? and oid=?",
-                tid, oid
-        ).structure // todo 过滤获得权限列表
+        def viewData = [:]
+        try {
+            viewData = new JsonSlurper().parseText(template(db).queryForMap(
+                    "select structure from ${AppProfile.TABLE_WSO_DATA} where tid=? and oid=?",
+                    tid, oid
+            ).structure)
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+        JsonCalc.getActions(viewData)
     }
 
+    // 返回list
     private def getDbActions(String db, String role, String tid, String oid, String nid) {
-        template(db).queryForMap(
-                "select structure from ${AppProfile.TABLE_ACTION_RIGHT} where tid=? and oid=? and nid=? and role=?",
-                tid, oid, nid, role
-        ).structure
+        try {
+            return new JsonSlurper().parseText(template(db).queryForMap(
+                    "select structure from ${AppProfile.TABLE_ACTION_RIGHT} where tid=? and oid=? and nid=? and role=?",
+                    tid, oid, nid, role
+            ).structure)
+        } catch (EmptyResultDataAccessException e) {
+            return []
+        }
     }
 
     // todo 是否有必要存在
@@ -120,15 +135,13 @@ class PermissionService extends BaseService {
     def getEditableActions(String db, String role, String tid, String oid, String nid) {
         List defaultActions = getDefaultActions(db, tid, oid)
         List dbActions = getDbActions(db, role, tid, oid, nid)
-        List res = []
         defaultActions.each {
             def checked = checked(it, defaultActions, dbActions)
-            if (checked != null) {
-                it.checked = checked
-                res.add it
-            }
+//            if (checked != null) {
+            it.checked = checked
+//            }
         }
-        res
+        defaultActions
     }
 
     def createOrUpdateActions(String db, String role, String tid, String oid, String nid, List list) { // todo
@@ -165,9 +178,10 @@ class PermissionService extends BaseService {
     }
 
     boolean exist(Map item, List list) {
-        list.find {
+        def find = list.find {
             it.id == item.id
-        } == null
+        }
+        find
     }
 
     boolean parentChecked(Map item, List list) { // 父亲是否checked

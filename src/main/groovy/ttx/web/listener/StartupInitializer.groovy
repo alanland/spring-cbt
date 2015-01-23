@@ -1,11 +1,9 @@
 package ttx.web.listener
 
-import groovy.json.JsonOutput
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Component
 import ttx.jdbc.JdbcUtil
 import ttx.service.base.CreationService
@@ -26,7 +24,7 @@ class StartupInitializer implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     ApplicationContext ctx
     @Autowired
-    JdbcUtil jdbcUtil
+    JdbcUtil jdbc
     @Autowired
     ApplicationConfig config
     @Autowired
@@ -35,7 +33,7 @@ class StartupInitializer implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         // 初始数据
-//        initData()
+        initData()
         // 单号同步到缓存
 
         generator.syncFromAllDb()
@@ -44,35 +42,38 @@ class StartupInitializer implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     def initData() {
-        int count = JdbcUtil.getTemplate().queryForObject("select count(1) from ttx_system where key=?", Integer.class, 'data_updated')
+        jdbc.templates.keySet().each { initDataDb(it) }
+    }
+
+    def initDataDb(String db) {
+        int count = jdbc.template(db).queryForObject("select count(1) from ttx_system where key=?", Integer.class, 'data_updated')
         if (count) {
             return
         }
-        SimpleJdbcInsert insert = JdbcUtil.getInsert()
-        insert.withTableName('ttx_navigator').execute([
+        jdbc.insert(db).withTableName('ttx_navigator').execute([
                 version  : 0,
                 key      : 'admin',
                 structure: jsonString('ttx/config/navigator')
         ])
-        insert.withTableName('ttx_wso_data').execute([
+        jdbc.insert(db).withTableName('ttx_wso_data').execute([
                 version  : 0,
-                tid      : 'ttx/dijit/wso/Creation',
-                nid      : '*',
+                tid      : 'ttx.dijit.wso.Creation',
+                oid      : '*',
                 structure: jsonString('ttx/config/view/Creation')
         ])
-        insert.withTableName('ttx_wso_data').execute([
+        jdbc.insert(db).withTableName('ttx_wso_data').execute([
                 version  : 0,
-                tid      : 'ttx/dijit/wso/Bill',
-                nid      : 'BillTemplate',
+                tid      : 'ttx.dijit.wso.Bill',
+                oid      : 'BillTemplate',
                 structure: jsonString('ttx/config/view/BillTemplate')
         ])
-        insert.withTableName('ttx_system').execute([
+        jdbc.insert(db).withTableName('ttx_system').execute([
                 key  : 'data_updated',
                 value: '1'
         ])
     }
 
     String jsonString(String file) {
-        JsonOutput.toJson(resourceLoader.getJsonStringFromResource(file))
+        resourceLoader.getJsonStringFromResource(file)
     }
 }

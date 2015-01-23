@@ -8,8 +8,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.web.bind.annotation.*
 import ttx.jdbc.rest.page.PostgresPagination
+import ttx.redis.RedisUtil
 import ttx.service.RestTableService
-import ttx.util.ModelCache
+import ttx.util.config.AppProfile
 
 import javax.servlet.http.HttpServletRequest
 
@@ -48,8 +49,9 @@ class RestTableController extends BaseController {
 
     @RequestMapping(value = '{tableKey}', method = RequestMethod.GET)
     def getList(@PathVariable("tableKey") String tableKey, HttpServletRequest request) {
+        String db = getDb(request)
         // 根据key名称获得表名称
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        Map tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey")) as Map
         String tableName = tableModel.tableName
         String bill = request.getHeader('X-Bill') // 是否是单据的查询，可能多表
         // 返回查询字段，如果客户端有指定，返回指定的

@@ -1,16 +1,21 @@
 datasource:
-    default:
+    cbt:
         url: jdbc:postgresql://localhost/cbt
         username: postgres
         password: wang
         driver-class-name: org.postgresql.Driver
-    mysql1:
-        url: jdbc:mysql://localhost/test
-        username: dbuser
-        password: dbpass
-        driver-class-name: com.mysql.jdbc.Driver
-    mysql211:
-        url: jdbc:mysql://localhost/test
-        username: dbuser
-        password: dbpass
-        driver-class-name: com.mysql.jdbc.Driver
+#    wang:
+#        url: jdbc:postgresql://localhost/wang
+#        username: postgres
+#        password: wang
+#        driver-class-name: org.postgresql.Driver
+#    mysql1:
+#        url: jdbc:mysql://localhost/test
+#        username: dbuser
+#        password: dbpass
+#        driver-class-name: com.mysql.jdbc.Driver
+#    mysql211:
+#        url: jdbc:mysql://localhost/test
+#        username: dbuser
+#        password: dbpass
+#        driver-class-name: com.mysql.jdbc.Driver

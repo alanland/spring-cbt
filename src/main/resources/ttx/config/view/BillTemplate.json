@@ -1,5 +1,7 @@
 {
-    "key": "user",
+    "tid": "ttx.dijit.wso.Bill",
+    "oid": "BillTemplate",
+    "key": "billTemplate",
     "billKey": "template",
     "description": "Bill Template",
     "actionJs": "",

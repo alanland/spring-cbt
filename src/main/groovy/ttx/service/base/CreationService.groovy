@@ -9,7 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.rowset.SqlRowSet
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ttx.model.meta.FieldType
-import ttx.util.ModelCache
+import ttx.redis.RedisUtil
+import ttx.util.config.AppProfile
 
 /**
  * Created by journey on 14-12-6.
@@ -30,8 +31,8 @@ class CreationService extends BaseService {
         getNavigator(db, 'admin')
     }
 
-    def getNavigator(String db, String key) {
-        template(db).queryForMap('select * from ttx_navigator where key=?', key).structure
+    List getNavigator(String db, String key) { // todo check result size
+        new JsonSlurper().parseText(template(db).queryForMap('select * from ttx_navigator where key=?', key).structure)
     }
 
     def updateNavigator(String db, String key, List data) {
@@ -62,7 +63,10 @@ select relname as TABLE_NAME from pg_class c
 where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname
 '''
         List<String> list = template(db).queryForList(sql, String.class)
-        ModelCache.cache.tables = list
+//        list.each {
+//            new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
+//            RedisUtil.set("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey", it)
+//        }
         list
     }
 
@@ -88,9 +92,9 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
     def getModels(String db, String table) {
         def list = template(db).queryForList("select * from $table")
         def models = list.collect { Map map ->
+            RedisUtil.set("$db:$table:${map.key}", map.structure)
             new JsonSlurper().parseText(map.structure) as Map
         }
-        ModelCache.cache[table] = models
         models
     }
 
@@ -108,7 +112,7 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
             code = '1'
             desc = e.toString()
         }
-        getModels(db, table)//    update cache    #todo to change
+        getModels(db, table)//    update cache    #todo to change 不用update那么多的缓存
         [code: code, desc: desc]
     }
 
@@ -140,145 +144,93 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' ord
             code = '1'
             desc = e.toString()
         }
-        getModels(db, table)//    update cache    #todo to change
+        RedisUtil.del("$db:$table:$key")
         return [code: code, desc: desc]
     }
 
-    def buildCache(String db) {
-        ModelCache.CACHE_KEYS.each {
-            getModels(db, it)
-        }
+    def getViewData(String db, String tid, String oid) {
+        String table = AppProfile.TABLE_WSO_DATA
+        def map = template(db).queryForMap("select * from $table where tid=? and oid=?", tid, oid)
+        RedisUtil.set("$db:$table:${map.tid}:${map.oid}", map.structure)
+        new JsonSlurper().parseText(map.structure)
     }
 
-/**
- * Query field structure data
- */
-    @Deprecated
-    def getQueryFieldStructureData() {
-        def list = []
-        SqlRowSet rowSet = template.queryForRowSet("select * from ${header.headerTableName} where 1=2 ")
-        SqlRowSetMetaData meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (header.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = line.tableFieldNameMapping[columnName]
-                map['type'] = 'string'//meta.getColumnTypeName(index)
-                map['location'] = 'Header'
-                map['operator'] = 'equals'
-                list.add map
-            }
+    def getViewDatas(String db) {
+        String table = AppProfile.TABLE_WSO_DATA
+        def list = template(db).queryForList("select * from $table")
+        def models = list.collect { Map map ->
+            RedisUtil.set("$db:$table:${map.tid}:${map.oid}", map.structure)
+            new JsonSlurper().parseText(map.structure) as Map
         }
-
-        rowSet = template.queryForRowSet("select * from ${header.lineTableName} where 1=2 ")
-        meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (line.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = line.tableFieldNameMapping[columnName]
-                map['type'] = meta.getColumnTypeName(index)
-                map['location'] = 'Line'
-                list.add map
-            }
-        }
-        list
+        models
     }
 
-/**
- * list structure data
- */
-    @Deprecated
-    def getListStructureData() {
-        def list = [
-                [id: Math.random(), field: 'bill_id', name: 'BillId', width: '80px'],
-                [id: Math.random(), field: 'bill_no', name: 'BillNo', width: '80px']
-        ]
-        SqlRowSet rowSet = template.queryForRowSet("select * from ${header.headerTableName} where 1=2 ")
-        SqlRowSetMetaData meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (header.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = line.tableFieldNameMapping[columnName]
-                map['type'] = meta.getColumnTypeName(index)
-                map['width'] = '80px'
-                list.add map
-            }
+    def getViewDatasByTid(String db, String tid) {
+        String table = AppProfile.TABLE_WSO_DATA
+        def list = template(db).queryForList("select * from $table where tid=?", tid)
+        def models = list.collect { Map map ->
+            RedisUtil.set("$db:$table:${map.tid}:${map.oid}", map.structure)
+            new JsonSlurper().parseText(map.structure) as Map
         }
-        list
+        models
     }
 
-/**
- * bill header field
- */
-    @Deprecated
-    def getHeaderFieldData() {
-        def list = []
-        SqlRowSet rowSet = template.queryForRowSet("select * from ${header.headerTableName} where 1=2 ")
-        SqlRowSetMetaData meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (header.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = header.tableFieldNameMapping[columnName]
-                map['type'] = 'string'//meta.getColumnTypeName(index)
-                list.add map
-            }
+    def createViewData(String db, Map map) {
+        String table = AppProfile.TABLE_WSO_DATA
+        JdbcTemplate template = template(db)
+        String tid = map.tid
+        String oid = map.oid
+        int count = template.queryForObject("select count(1) from ${table} where tid=? and oid=?", Integer.class, tid, oid)
+        if (count > 0)
+            return [code: '1', desc: "key [${tid},${oid}] existed"]
+        String sql = "insert into ${table}(version,tid,oid,structure) values(0,?,?,?)"
+        def code = '0', desc = 'ok'
+        try {
+            template.update(sql, tid, oid, (map as JSONObject).toString())
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
         }
-        list
+        getViewData(db, tid, oid)//    update cache    #todo 直接更新不用sql
+        [code: code, desc: desc]
     }
 
-/**
- * details grid structure data
- */
-    @Deprecated
-    def getLineStructureData() {
-        def list = [
-                [id: Math.random(), field: 'line_id', name: 'LineId', width: '80px'],
-                [id: Math.random(), field: 'bill_id', name: 'BillId', width: '80px'],
-                [id: Math.random(), field: 'bill_no', name: 'BillNo', width: '80px']
-        ]
-        SqlRowSet rowSet = template.queryForRowSet("select * from ${header.headerTableName} where 1=2 ")
-        SqlRowSetMetaData meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (header.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = line.tableFieldNameMapping[columnName]
-                map['type'] = meta.getColumnTypeName(index)
-                map['width'] = '80px'
-                list.add map
-            }
+    def updateViewData(String db, Map map) {
+        String table = AppProfile.TABLE_WSO_DATA
+        JdbcTemplate template = template(db)
+        String tid = map.tid
+        String oid = map.oid
+        int count = template.queryForObject("select count(1) from ${table} where tid=? and oid=?", Integer.class, tid, oid)
+        if (count == 0)
+            return [code: '1', desc: "key [${tid},${oid}] not existed in ${table}"]
+        if (count > 1)
+            return [code: '1', desc: "key [${tid},${oid}] more than one items in ${table}"]
+        def code = '0', desc = 'ok'
+        try {
+            update(db).withTableName(table).execute([
+                    structure: (map as JSONObject).toString()
+            ], [
+                    tid: tid,
+                    oid: oid
+            ])
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
         }
-        list
+        getViewData(db, tid, oid)//    update cache    #todo 直接更新不用再sql
+        [code: code, desc: desc]
     }
 
-/**
- * get detail field structure data
- */
-    @Deprecated
-    def getLineFieldData() {
-        def list = []
-        SqlRowSet rowSet = template.queryForRowSet("select * from ${header.headerTableName} where 1=2 ")
-        SqlRowSetMetaData meta = rowSet.getMetaData()
-        (1..meta.columnCount).each { index ->
-            String columnName = meta.getColumnName(index)
-            if (header.tableFieldNameMapping.containsKey(columnName)) {
-                def map = [id: Math.random()]
-                map['field'] = columnName
-                map['name'] = line.tableFieldNameMapping[columnName]
-                map['type'] = 'string'//meta.getColumnTypeName(index)
-                list.add map
-            }
+    def deleteViewData(String db, String tid, String oid) {
+        String table = AppProfile.TABLE_WSO_DATA
+        def code = '0', desc = 'ok'
+        try {
+            template(db).update("delete from ${table} where tid=? and oid=?", tid, oid)
+        } catch (e) {
+            code = '1'
+            desc = e.toString()
         }
-        list
+        RedisUtil.del("$db:$table:$tid:$oid")
+        return [code: code, desc: desc]
     }
-
-
 }

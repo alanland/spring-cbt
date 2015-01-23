@@ -1,4 +1,6 @@
 {
+    "tid": "ttx.dijit.wso.Creation",
+    "oid": "*",
     "tableModel": {
         "fields": [
             {"id": "key", "type": "string", "field": "key", "name": "Key"},
@@ -455,12 +457,11 @@
             {"id": "id", "type": "string", "field": "id", "name": "Id"},
             {"id": "name", "type": "string", "field": "name", "name": "Name"},
             {
-                "id": "type", "type": "filteringSelect", "field": "type", "name": "Type",
+                "id": "tid", "type": "comboBox", "field": "tid", "name": "Type",
                 "args": {"searchAttr": "id", "labelAttr": "id", "required": false}
             },
-            {"id": "tid", "type": "string", "field": "tid", "name": "View"},
-            {"id": "parent", "type": "string", "field": "parent", "name": "parent"},
-            {"id": "oid", "type": "string", "field": "oid", "name": "oid"}
+            {"id": "oid", "type": "string", "field": "oid", "name": "View"},
+            {"id": "parent", "type": "string", "field": "parent", "name": "parent"}
         ]
     }
 }

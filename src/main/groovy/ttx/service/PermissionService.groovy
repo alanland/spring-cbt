@@ -44,6 +44,31 @@ class PermissionService extends BaseService {
         res
     }
 
+    // 获取菜单用于系统显示，只返回有权限的菜单
+    def getSecurableUserNav(String db, String user) {
+        // 获取单据 todo 菜单顺序有问题，要改成遍历admin菜单
+        List defaultNav = creationService.getSysNavigator(db)
+        List roles = template(db).queryForList(
+                "select role_code from ${AppProfile.TABLE_USER_ROLE} where user_code=?",
+                String.class,
+                user
+        )
+        if(user=='admin' || roles.contains('admin')){
+            return defaultNav
+        }
+        List res = []
+        roles.each { String role ->
+            List roleNav = getSecurableNav(db, role)
+            roleNav.each {
+                String navItem
+                if (!res.find({ it.id == navItem.id })) {
+                    res.add(navItem)
+                }
+            }
+        }
+        res
+    }
+
     // 获取所有菜单，并修正 checked 属性
     def getEditableNav(String db, String role) {
         List dbNav = creationService.getNavigator(db, role)

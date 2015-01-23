@@ -1,12 +1,14 @@
 package ttx.service
 
+import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.context.WebApplicationContext
+import ttx.redis.RedisUtil
 import ttx.service.base.BaseService
-import ttx.util.ModelCache
 import ttx.util.SequenceGenerator
+import ttx.util.config.AppProfile
 
 /**
  * ＠author 王成义 
@@ -25,7 +27,7 @@ class RestTableService extends BaseService {
     }
 
     def create(String db, String tableKey, Map map) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        def tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
         // TODO 独立成单独的模块 U{yyy-MM-dd}{000000}
         tableModel.fields.each {
             if (it.autoNo) {
@@ -51,7 +53,7 @@ class RestTableService extends BaseService {
     }
 
     def saveOrUpdate(String db, String tableKey, Map map) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        def tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
         def id = map[tableModel.idColumnName]
         int count = template(db).queryForObject(
                 "select count(1) from ${tableModel.tableName} where ${tableModel.idColumnName}=?",
@@ -68,7 +70,7 @@ class RestTableService extends BaseService {
     }
 
     def get(String db, String tableKey, String idStr) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        def tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
         def item = tableModel.fields.find {
             it.field == tableModel.idColumnName
         }
@@ -77,7 +79,7 @@ class RestTableService extends BaseService {
     }
 
     def filterSelect(String db, String tableKey) {
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        def tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
         String tableName = tableModel.tableName
         String idAttr = tableModel.idAttr ?: tableModel.idColumnName
         String labelAttr = tableModel.labelAttr ?: tableModel.idColumnName
@@ -94,7 +96,7 @@ class RestTableService extends BaseService {
 
     def deleteTable(String db, String tableKey, Map map) {
         List list = map.items
-        Map tableModel = ModelCache.getCachedModel(ModelCache.TABLE_TABLE_MODEL, tableKey)
+        def tableModel = new JsonSlurper().parseText(RedisUtil.get("$db:${AppProfile.TABLE_TABLE_MODEL}:$tableKey"))
         String idColumn = tableModel.idColumnName
         def item = tableModel.fields.find {
             it.field == idColumn

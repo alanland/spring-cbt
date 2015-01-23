@@ -3,6 +3,7 @@ package ttx.redis
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
+import ttx.util.SerializeUtil
 
 /**
  * ＠author 王成义 
@@ -11,6 +12,7 @@ import redis.clients.jedis.JedisPoolConfig
 class RedisUtil {
     private final static JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
 
+    // todo 使用的时候注意，如果没有缓存，去数据库获取
     static String get(String key) {
         pool.getResource().withCloseable { Jedis jedis ->
             jedis.get(key)
@@ -33,6 +35,26 @@ class RedisUtil {
     static void set(String key, String value) {
         pool.getResource().withCloseable { Jedis jedis ->
             jedis.set(key, value)
+        }
+    }
+
+    static void del(String... keys) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            keys.each {
+                jedis.del(it)
+            }
+        }
+    }
+
+    static void setObject(String key, Object o) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            jedis.set(key.bytes, SerializeUtil.serialize(o))
+        }
+    }
+
+    static Object getObject(String key) {
+        pool.getResource().withCloseable { Jedis jedis ->
+            SerializeUtil.deserialize(jedis.get(key.bytes))
         }
     }
 

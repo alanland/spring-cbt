@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 import paillard.florent.springframework.simplejdbcupdate.SimpleJdbcUpdate
 import ttx.util.config.ApplicationConfig
 
+import javax.annotation.PostConstruct
+
 @Component
 @Configuration
 class JdbcUtil {
@@ -20,8 +22,10 @@ class JdbcUtil {
     JdbcUtil jdbcUtil() {
         new JdbcUtil()
     }
+
     @Autowired
     ApplicationConfig config
+
     @Autowired
     ApplicationContext ctx
 
@@ -32,11 +36,14 @@ class JdbcUtil {
     Map<String, SimpleJdbcInsert> inserts = [:]
     Map<String, SimpleJdbcUpdate> updates = [:]
 
+    JdbcUtil() {}
+
+    @PostConstruct
     // todo for production
-    JdbcUtil() {
+    void initIt() throws Exception {
         config.datasource.each { String k, v ->
             SimpleDriverDataSource s = new SimpleDriverDataSource([
-                    driverClass: Class.forName(v.driverClassName),
+                    driverClass: Class.forName(v['driver-class-name']),
                     username   : v.username,
                     password   : v.password,
                     url        : v.url
@@ -53,15 +60,17 @@ class JdbcUtil {
         templates.get(db)
     }
 
-    JdbcTemplate namedTemplate(String db) {
+    NamedParameterJdbcTemplate namedTemplate(String db) {
         namedTemplates.get(db)
     }
 
-    JdbcTemplate insert(String db) {
-        inserts.get(db)
+    SimpleJdbcInsert insert(String db) {
+//        inserts.get(db)
+        new SimpleJdbcInsert(dataSources.get(db))
     }
 
-    JdbcTemplate update(String db) {
-        updates.get(db)
+    SimpleJdbcUpdate update(String db) {
+//        updates.get(db)
+        new SimpleJdbcUpdate(dataSources.get(db))
     }
 }

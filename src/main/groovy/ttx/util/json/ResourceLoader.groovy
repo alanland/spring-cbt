@@ -1,5 +1,7 @@
 package ttx.util.json
 
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,6 +21,7 @@ class ResourceLoader {
     }
 
     String getJsonStringFromResource(String file) {
-        ctx.getResource("classpath:${file}.json").getText('utf-8')
+//        def text = .getText('utf-8')
+        JsonOutput.toJson(new JsonSlurper().parse(ctx.getResource("classpath:${file}.json").getFile()))
     }
 }

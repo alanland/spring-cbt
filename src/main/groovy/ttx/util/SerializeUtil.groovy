@@ -33,7 +33,7 @@ public class SerializeUtil {
      * @param bytes
      * @return
      */
-    public static Object unserialize(byte[] bytes) {
+    public static Object deserialize(byte[] bytes) {
         ByteArrayInputStream bais = null;
         try {
             // 反序列化

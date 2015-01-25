@@ -203,8 +203,6 @@ class PermissionService extends BaseService {
             return parentChecked(item, dbNav)
         }
         // 原来就存在的，两边都存在
-        item.checked
+        dbNav.find({ it.id == item.id }).checked
     }
-
-
 }

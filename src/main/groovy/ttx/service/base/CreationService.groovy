@@ -32,8 +32,12 @@ class CreationService extends BaseService {
         getNavigator(db, 'admin')
     }
 
-    List getNavigator(String db, String key) { // todo check result size
-        new JsonSlurper().parseText(template(db).queryForMap('select * from ttx_navigator where key=?', key).structure)
+    List getNavigator(String db, String key) {
+        try {
+            return new JsonSlurper().parseText(template(db).queryForMap('select * from ttx_navigator where key=?', key).structure)
+        } catch (EmptyResultDataAccessException e) {
+            return []
+        }
     }
 
     def updateNavigator(String db, String key, List data) {

@@ -34,7 +34,7 @@ class PermissionController extends BaseController {
         service.getSecurableNav(db, role)
     }
 
-    @RequestMapping(value = 'nav/{role}', method = RequestMethod.POST, consumes = 'application/json')
+    @RequestMapping(value = 'nav/{role}', method = RequestMethod.PUT, consumes = 'application/json')
     def createRoleNav(HttpServletRequest request, @PathVariable String role, @RequestBody Map map) {
         String db = getDb(request)
         service.createOrUpdateNav(db, role, map.items)
